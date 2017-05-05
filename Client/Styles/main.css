@@ -1,0 +1,117 @@
+﻿body {
+}
+
+.editBtn {
+    float: right !important;
+    background-color: pink;
+    text-align: center !important;
+}
+
+.md-mini {
+    background-color: white !important;
+    color: black !important;
+}
+
+md-button {
+    border: solid 1px black !important;
+}
+
+.taskName {
+    white-space: nowrap;
+    overflow: hidden;
+    /*border: 1px solid #000000;*/
+}
+
+.taskControls {
+    color: gray !important;
+}
+
+.md-toolbar-tools {
+    background-color: #0d47a1;
+    color: white;
+}
+
+    .md-toolbar-tools p {
+        background-color: #002171;
+    }
+
+.taskControls span {
+    font-size: 1.5em;
+}
+
+.taskOn {
+    /*background-color:#C4D26E;*/
+    /*background-color:#C1E69C;*/
+    /*border-radius: 50%;*/
+    /*background-color: #93E48B;*/
+    background-color: #E3FBE1;
+}
+
+.taskOff {
+    /*border-radius: 50%;*/
+    /*background-color:#EDC2D1;*/
+    /*background-color: #FFE178;*/
+    background-color: #FFF8E2;
+}
+
+.taskBlank {
+    /*border-radius: 50%;*/
+    /*background-color: #BBBBBB;*/
+    background-color: #E9E9E9;
+}
+
+.taskOff:hover, .taskOn:hover {
+    opacity: .8;
+}
+
+md-card md-card-title {
+    padding: 4px 2px 2px;
+}
+
+#userProfilePic {
+    border-radius: 50%;
+}
+
+#userProfile p {
+    display: inline;
+}
+#userProfile {
+    font-size: .7em!important;
+}
+
+.material-icons {
+    color: gray !important;
+}
+
+/*h1 {
+    color: gray !important;
+}*/
+
+
+
+/*.oddListItem {
+    background-color: #e6e9ef;
+}*/
+md-list-item {
+    border-bottom: solid 3px;
+    border-bottom-color: #e6e9ef;
+}
+
+    md-list-item:hover {
+        opacity: .7;
+    }
+
+#gotoThePageTop {
+    position: fixed !important;
+    bottom: 10%;
+    right: 2%;
+    display: none;
+    z-index: 100;
+    opacity: .70;
+    background-color: #5472d3 !important;
+}
+
+    #gotoThePageTop .material-icons {
+        color: white !important;
+    }
+    /*Animation for collapse/expand*/

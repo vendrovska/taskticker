@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>NodejsWebAppBlank</Name>
+    <RootNamespace>NodejsWebAppBlank</RootNamespace>
+    <ScriptArguments>
+    </ScriptArguments>
+    <Environment>dbuserName=vendrovska 
+dbPassword=467874108Tania!</Environment>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>854d7695-6e07-4fe3-88bb-09d201f728aa</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>server.js</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <NodejsPort>1337</NodejsPort>
+    <StartWebBrowser>True</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="bower_components\angular-xeditable\dist\js\xeditable.js" />
+    <Compile Include="bower_components\angular-xeditable\dist\js\xeditable.min.js" />
+    <Compile Include="bower_components\angular\angular.js" />
+    <Compile Include="bower_components\angular\angular.min.js" />
+    <Compile Include="bower_components\angular\index.js" />
+    <Compile Include="Client\Controllers\taskController.js" />
+    <Compile Include="Client\Libraries\xeditable.js" />
+    <Compile Include="server.js" />
+    <Content Include="AzureSQLDB\TasksTable.sql" />
+    <Content Include="bower_components\angular-xeditable\.bower.json" />
+    <Content Include="bower_components\angular-xeditable\bower.json" />
+    <Content Include="bower_components\angular-xeditable\CHANGELOG.txt" />
+    <Content Include="bower_components\angular-xeditable\CONTRIBUTING.md" />
+    <Content Include="bower_components\angular-xeditable\dist\css\xeditable.css" />
+    <Content Include="bower_components\angular-xeditable\dist\css\xeditable.min.css" />
+    <Content Include="bower_components\angular-xeditable\LICENSE" />
+    <Content Include="bower_components\angular-xeditable\readme.md" />
+    <Content Include="bower_components\angular\.bower.json" />
+    <Content Include="bower_components\angular\angular-csp.css" />
+    <Content Include="bower_components\angular\angular.min.js.gzip" />
+    <Content Include="bower_components\angular\angular.min.js.map" />
+    <Content Include="bower_components\angular\bower.json" />
+    <Content Include="bower_components\angular\LICENSE.md" />
+    <Content Include="bower_components\angular\package.json" />
+    <Content Include="bower_components\angular\README.md" />
+    <Content Include="Client\Styles\Images\favicon.ico" />
+    <Content Include="Client\Styles\main.css" />
+    <Content Include="Client\Styles\xeditable.css" />
+    <Content Include="Client\Views\Index.html" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bower_components\" />
+    <Folder Include="bower_components\angular-xeditable\" />
+    <Folder Include="bower_components\angular-xeditable\dist\" />
+    <Folder Include="bower_components\angular-xeditable\dist\css\" />
+    <Folder Include="bower_components\angular-xeditable\dist\js\" />
+    <Folder Include="bower_components\angular\" />
+    <Folder Include="Client\" />
+    <Folder Include="Client\Controllers\" />
+    <Folder Include="Client\Libraries\" />
+    <Folder Include="Client\Styles\" />
+    <Folder Include="Client\Styles\Images\" />
+    <Folder Include="Client\Views\" />
+    <Folder Include="AzureSQLDB\" />
+  </ItemGroup>
+  <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

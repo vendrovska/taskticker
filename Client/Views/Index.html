@@ -48,7 +48,7 @@
             i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
                 (i[r].q = i[r].q || []).push(arguments)
             }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
         })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-96831297-1', 'auto');
@@ -79,7 +79,6 @@
     <!--<input type="text" ng-model="newItemName" value="new task" />-->
     <divider></divider>
     <div class="md-toolbar-tools" layout="row" layout-margin layout-padding>
-        <p></p>
         <h1>TaskTicker</h1>
         <div id="userProfile" flex layout="row" layout-align="end center" layout-margin>
             <img ng-src="{{userInfo.userPic}}" height="30" alt="profile image" id="userProfilePic" ng-if="userInfo.signedIn" title="{{userInfo.userName}}" />
@@ -89,22 +88,22 @@
         </div>
     </div>
 
-    <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="row" layout-align="space-between start" layout-margin>
-        <div layout="row">
+    <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="row" layout-align=" start center" layout-margin>
+        <div layout="row" layout-align="start center">
             <md-input-container class="md-block">
                 <label><i class="material-icons">playlist_add</i></label>
                 <textarea auto-complete ui-items="taskNamesDictionary" ng-required="true" value="" ng-keyup="addNewTask($event, newTaskForm.$valid)" placeholder="{{workItemMessage}}" ng-minlength="1" ng-maxlength="256" rows="1" cols="60" md-select-on-focus="" type="text" ng-model="newItemName"></textarea>
             </md-input-container>
             <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid">NEW</md-button>
         </div>
+        <md-button title="save as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
 
         <!--TODO: decode what to do with Stop All Btn-->
         <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
         <!-- TODO: REMOVE OR COMPLETE THIS <md-button ng-click="testUrl()">test url</md-button>-->
-        <md-button title="download as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>download as csv</md-button>
-        <md-button class="md-icon-button" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
+        <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
         <div google-chart chart="myChartObject" style="height:auto; width:200%;" ng-if="showChart"></div>
-    </form>
+          </form>
     <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
         <md-icon class="material-icons">keyboard_capslock</md-icon>
     </md-button>
@@ -117,7 +116,7 @@
                 <h4 ng-if="tasks.length > 0">{{timePeriods[$index].title}}({{timePeriods[$index].date| date:'dd/MM/yyyy'}})</h4>
 
             </div>
-            
+
             <md-divider ng-if="tasks.length > 0"></md-divider>
             <div id="workItemContainer" ng-if="!collapsed" class="content-area sample-show-hide" flex>
 

@@ -27,7 +27,7 @@ md-button {
 }
 
 .md-toolbar-tools {
-    background-color: #0d47a1;
+    background-color: #212121;
     color: white;
 }
 
@@ -44,20 +44,20 @@ md-button {
     /*background-color:#C1E69C;*/
     /*border-radius: 50%;*/
     /*background-color: #93E48B;*/
-    background-color: #E3FBE1;
+    background-color: #E8F5E9;
 }
 
 .taskOff {
     /*border-radius: 50%;*/
     /*background-color:#EDC2D1;*/
     /*background-color: #FFE178;*/
-    background-color: #FFF8E2;
+    background-color: #FFF8E1;
 }
 
 .taskBlank {
     /*border-radius: 50%;*/
     /*background-color: #BBBBBB;*/
-    background-color: #E9E9E9;
+    background-color: #F5F5F5;
 }
 
 .taskOff:hover, .taskOn:hover {
@@ -108,7 +108,7 @@ md-list-item {
     display: none;
     z-index: 100;
     opacity: .70;
-    background-color: #5472d3 !important;
+    background-color: #E91E63 !important;
 }
 
     #gotoThePageTop .material-icons {

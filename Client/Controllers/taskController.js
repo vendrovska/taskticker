@@ -175,7 +175,7 @@
             $("#newItemFormId textarea").val('');
         };
         $scope.addNewTask = function (event, formValid) {
-            if (event.keyCode == 13) {
+            if (event.keyCode == 13 || event.type == "submit" ) {
                 var minLength = $("#newItemFormId textarea").text.length;
                 if (formValid && minLength > 0) {
                     addNewTaskHelper();

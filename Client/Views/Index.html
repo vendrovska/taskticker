@@ -102,6 +102,8 @@
         <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
         <!-- TODO: REMOVE OR COMPLETE THIS <md-button ng-click="testUrl()">test url</md-button>-->
         <md-button title="download as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>download as csv</md-button>
+        <md-button class="md-icon-button" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
+        <div google-chart chart="myChartObject" style="height:auto; width:200%;" ng-if="showChart"></div>
     </form>
     <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
         <md-icon class="material-icons">keyboard_capslock</md-icon>
@@ -113,11 +115,9 @@
                 <md-button class="md-icon-button" ng-click="collapsed = false" ng-model="collapsed" ng-show="collapsed"><md-icon class="material-icons">arrow_drop_down</md-icon></md-button>
                 <md-button class="md-icon-button" ng-click="collapsed = true" ng-model="collapsed" ng-show="!collapsed"><md-icon class="material-icons">arrow_drop_up</md-icon></md-button>
                 <h4 ng-if="tasks.length > 0">{{timePeriods[$index].title}}({{timePeriods[$index].date| date:'dd/MM/yyyy'}})</h4>
-                <div>
-                    <md-button class="md-icon-button" ng-click="drawGoogleChart($index)"><md-icon class="material-icons">insert_chart</md-icon></md-button>
-                </div>
+
             </div>
-            <div google-chart chart="myChartObject" style="height:auto; width:200%;" ng-if="showChart"></div>
+            
             <md-divider ng-if="tasks.length > 0"></md-divider>
             <div id="workItemContainer" ng-if="!collapsed" class="content-area sample-show-hide" flex>
 
@@ -125,10 +125,6 @@
                     <md-card ng-repeat="item in tasks" id="{{item.Id}}" flex="100">
                         <md-card-title ng-class="{'taskOn': item.TimerOn, 'taskOff': !item.TimerOn, 'taskBlank':item.TotalTime == 0}">
                             <p layout-margin contenteditable="true" id="p{{item.Id}}" ng-keyup="$event.keyCode == 13 ? updateTaskName(item) : null" ng-focus="editingTaskName = true" ng-blur="editingTaskName = false">{{item.Name}}</p>
-                            <!--<div layout="row" layout-align="end" >
-                                <md-button class="md-icon-button"><md-icon class="material-icons">more_horiz</md-icon> </md-button>
-                            </div>-->
-
                         </md-card-title>
                         <md-card-content>
                             <md-card-actions class="taskControls" layout="row" layout-align="space-between center">
@@ -136,7 +132,7 @@
                                 <div layout="row" layout-align="center center">
                                     <md-button ng-if="!item.TimerOn" ng-click="startStopwatch(item)" class="md-icon-button"><md-icon class="material-icons">play_arrow</md-icon></md-button>
                                     <md-button ng-if="item.TimerOn" ng-click="pauseStopwatch(item)" class="md-icon-button"><md-icon class="material-icons">pause</md-icon></md-button>
-                                    <span>{{("0" + item.Hours).slice(-2)}}:{{("0" + item.Minutes).slice(-2)}}:{{("0" + item.Seconds).slice(-2)}}</span>
+                                    <span>{{("0" + item.Hours).slice(-3)}}:{{("0" + item.Minutes).slice(-2)}}:{{("0" + item.Seconds).slice(-2)}}</span>
                                 </div>
                                 <!--<p layout-margin contenteditable="true"id="taskTimerHours_{{item.Id}}" ng-keyup="$event.keyCode == 13 ? updateTaskTimer(item, 'hours') : null" ng-focus="editingTaskTimer = true" ng-blur="editingTaskTimer = false">{{item.Hours}}</p>-->
                                 <!--<input type="number" min="5" max="30" step="5" class="stopwatch" ng-value="{{("0" + item.Minutes).slice(-2)}}" />
@@ -162,8 +158,8 @@
 
     </div>
     <footer>
-        <div layout="row" layout-align="center center">
-            <a href="https://github.com/vendrovska" target="_top">by vendrovska</a>
+        <div layout="row" layout-align="end center">
+            <a href="https://github.com/vendrovska/taskticker" target="_top">by vendrovska</a>
         </div>
     </footer>
 </body>

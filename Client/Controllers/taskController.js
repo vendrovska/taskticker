@@ -17,7 +17,7 @@
                 });
             };
         });
-    function taskController($scope, $interval, $http, $anchorScroll, $location, $cookies, $mdDialog) {
+    function taskController($scope, $interval, $http, $anchorScroll, $location, $cookies, $mdDialog, googleChartApiPromise) {
         $scope.collapsed = false;
         $scope.date = new Date();
         $scope.taskNamesDictionary = [];
@@ -447,57 +447,59 @@
             }
         });
 
-
         //Google Charts
         $scope.showChart = false;
-        $scope.drawGoogleChart = function (index) {
+        $scope.drawGoogleChart = function () {
             if (!$scope.showChart) {
                 $scope.showChart = true;
-                console.log($scope.allTaskList[index]);
-                var curChart
-                $scope.myChartObject = {};
-                $scope.myChartObject.type = "PieChart";
-                
-                $scope.onions = [
-                    { v: "Onions" },
-                    { v: 3 },
-                ];
-
-                $scope.myChartObject.data = {
-                    "cols": [
-                        { id: "t", label: "Topping", type: "string" },
-                        { id: "s", label: "Slices", type: "number" }
-                    ], "rows": [
-                        {
-                            c: [
-                                { v: "Mushrooms" },
-                                { v: 3 },
-                            ]
+                googleChartApiPromise.then(loadDataForGoogleChart);
+                function loadDataForGoogleChart() {
+                    $http.get("/loadDataForGoogleChart")
+                        .then(
+                            function (response) {
+                                var data = response.data;
+                                var allRowsForChart = [];
+                                data.forEach(function (item) {
+                                    var currentDate = new Date(item.startTime).toString();//new Date(1000 * item.BeginOfTheDayInSeconds);
+                                    var timeInSeconds = parseInt(item.TotalWeekTimeInHours);
+                                    var curRowArr = [currentDate, timeInSeconds];
+                                    allRowsForChart.push(curRowArr);
+                                });
+                                buildDataTable(allRowsForChart);
+                            },
+                            function (error) {
+                                console.log("error in loadTaskNameDictionary: " + error);
+                            }
+                        )
+                }
+                function buildDataTable(allRowsForChart) {
+                    var table = new google.visualization.DataTable();
+                    table.addColumn("string", "Date");
+                    table.addColumn("number", "Hours");
+                    table.addRows(allRowsForChart);
+                    $scope.myChartObject = {
+                        type: "ColumnChart",
+                        cssStyle: "height:600px; width:100%",
+                        options: { title: "Sales per Month" },
+                        data: table
+                    };
+                    $scope.myChartObject.options = {
+                        title: 'Hours per week',
+                        hAxis: {
+                            title: 'Date'
+//                            format: 'h:mm a',
+                            //viewWindow: {
+                            //    min: [7, 30, 0],
+                            //    max: [17, 30, 0]
+                            //}
                         },
-                        { c: $scope.onions },
-                        {
-                            c: [
-                                { v: "Olives" },
-                                { v: 31 }
-                            ]
+                        vAxis: {
+                            title: 'Time spent in hours'
                         },
-                        {
-                            c: [
-                                { v: "Zucchini" },
-                                { v: 1 },
-                            ]
-                        },
-                        {
-                            c: [
-                                { v: "Pepperoni" },
-                                { v: 2 },
-                            ]
+                        timeline: {
+                            groupByRowLabel: true
                         }
-                    ]
-                };
-
-                $scope.myChartObject.options = {
-                    'title': 'How much hours in total was spent: ' + index
+                    };
                 };
 
             }
@@ -505,16 +507,7 @@
                 $scope.showChart = false;
             }
         };
-        //$scope.editTaskTime = function ( direction, n, item) {
-        //    switch (direction){
-        //        case -1:
 
-        //        case 1:
-
-        //        default:
-
-        //    }
-        //};
         //TODO: remove keepAlive when switched to other server. Need it now only because Azure puts server to sleep.
         //function keepAlive() {
         //    setInterval(keepAliveCall, 1000000);
@@ -540,5 +533,5 @@
         socket.emit('my other event', { my: 'data lala' });
     });
 
- 
+
 })();

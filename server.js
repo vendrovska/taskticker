@@ -201,6 +201,55 @@ function loadTaskNameDictionaryDB(res) {
         // connection.execSql(request);
     });
 };
+
+function loadDataForGoogleChartDB(res) {
+    pool.acquire(function (err, connection) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        totalActiveConnections++;
+        var RS = [];
+        request = new Request(
+            // TODO: column names
+            //  BeginOfTheDayInSeconds
+            //  TotalWeekTimeSeconds
+            // Select weekly total time spent on tasks, grouped by initialStart dates converted to Monday for each week. 
+            "USE knockAppDB SELECT startTime, (SUM(TotalTime))/60/60 as TotalWeekTimeInHours FROM  "
+            + "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks WHERE googleUserId = @googleUserId) as T "
+            + "GROUP BY startTime "
+            + "ORDER BY startTime",
+            function (err) {
+                if (err) {
+                    console.log("An error during loadTaskNameDictionaryDB: " + err);
+                }
+            });
+        request.addParameter('googleUserId', TYPES.BigInt, googleUserId);
+        connection.execSql(request);
+
+        request.on('row', function (columns) {
+            var row = {};
+            columns.forEach(function (column) {
+                if (column.isNull) {
+                    row[column.metadata.colName] = null;
+                } else {
+                    row[column.metadata.colName] = column.value;
+                }
+            });
+            RS.push(row);
+        });
+        request.on('doneProc', function (rowCount, more, returnStatus, rows) {
+            res.setHeader('Content-Type', 'application/json');
+            res.write(JSON.stringify(RS));
+            res.end();
+            if (connection != undefined) {
+                totalActiveConnections--;
+                connection.release();
+            }
+        });
+    });
+}
+
 function loadAllTasksDB(res) {
     //acquire a connection
     console.log("about to aquire new connection. Total active connections: " + totalActiveConnections);
@@ -350,7 +399,9 @@ var server = http.createServer(function (req, res) {
     else if (req.url === "/loadTaskNameDictionary") {
         loadTaskNameDictionaryDB(res);
     }
-
+    else if (req.url === "/loadDataForGoogleChart") {
+        loadDataForGoogleChartDB(res);
+    }
     else if (req.url == "/tokensignin") {
         var jsonString = '';
         req.on('data', function (data) {

@@ -6,7 +6,7 @@ Demo:
 https://taskticker.azurewebsites.net
 
 
-Node.JS, Angular, Google sing-in (OAuth 2.0).
+Node.js, Angular, Google sing-in (OAuth 2.0).
 
 When you singned in, you can access your tasks from any device. 
 Supports export to CSV.

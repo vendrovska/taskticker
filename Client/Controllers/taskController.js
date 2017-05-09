@@ -20,6 +20,10 @@
     function taskController($scope, $interval, $http, $anchorScroll, $location, $cookies, $mdDialog, googleChartApiPromise) {
         $scope.collapsed = false;
         $scope.date = new Date();
+        $scope.chartStartDate = new Date();//.getDate();
+        $scope.chartEndDate = new Date();
+        $scope.chartmMaxDate = new Date(8640000000000000);
+        console.log($scope.chartStartDate);
         $scope.taskNamesDictionary = [];
         //$scope.taskNamesDictionary = ["Today", "The day before", "Older"]
         $scope.workItems = [];
@@ -68,6 +72,8 @@
             todayTasks = [];
             theDayBeforeTasks = [];
             oldTasks = [];
+            //allRowsForChart = []; //to clean out the Google Chart TODO: Clean cookies after sign out
+
             $scope.taskNamesDictionary = [];
             $scope.allTaskList = [todayTasks, theDayBeforeTasks, oldTasks];
             $scope.userInfo = {
@@ -449,6 +455,7 @@
 
         //Google Charts
         $scope.showChart = false;
+        var allRowsForChart;
         $scope.drawGoogleChart = function () {
             if (!$scope.showChart) {
                 $scope.showChart = true;
@@ -458,7 +465,7 @@
                         .then(
                             function (response) {
                                 var data = response.data;
-                                var allRowsForChart = [];
+                                allRowsForChart = [];
                                 data.forEach(function (item) {
                                     var currentDate = new Date(item.startTime).toString();//new Date(1000 * item.BeginOfTheDayInSeconds);
                                     var timeInSeconds = parseInt(item.TotalWeekTimeInHours);

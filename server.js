@@ -210,13 +210,16 @@ function loadDataForGoogleChartDB(res) {
         }
         totalActiveConnections++;
         var RS = [];
+        //TODO get rid of hardcoded values and pass user's parameters
+        var endDate = 1492792719;
+        var startDate = 1494280950;
         request = new Request(
             // TODO: column names
             //  BeginOfTheDayInSeconds
             //  TotalWeekTimeSeconds
             // Select weekly total time spent on tasks, grouped by initialStart dates converted to Monday for each week. 
             "USE knockAppDB SELECT startTime, (SUM(TotalTime))/60/60 as TotalWeekTimeInHours FROM  "
-            + "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks WHERE googleUserId = @googleUserId) as T "
+            + "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
             + "GROUP BY startTime "
             + "ORDER BY startTime",
             function (err) {
@@ -225,6 +228,8 @@ function loadDataForGoogleChartDB(res) {
                 }
             });
         request.addParameter('googleUserId', TYPES.BigInt, googleUserId);
+        request.addParameter('startDate', TYPES.BigInt, startDate);
+        request.addParameter('endDate', TYPES.BigInt, endDate);
         connection.execSql(request);
 
         request.on('row', function (columns) {

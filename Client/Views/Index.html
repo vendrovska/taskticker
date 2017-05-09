@@ -102,8 +102,35 @@
         <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
         <!-- TODO: REMOVE OR COMPLETE THIS <md-button ng-click="testUrl()">test url</md-button>-->
         <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
-        <div google-chart chart="myChartObject" style="height:auto; width:200%;" ng-if="showChart"></div>
+
+
+
+
+
           </form>
+
+    <form name="myForm" flex-gt-xs ng-if="showChart">
+        <md-input-container>
+                <md-datepicker ng-model="chartStartDate" md-min-date="-chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}"  name="chartStartDate"></md-datepicker>
+            <div ng-messages="myForm.chartStartDate.$error">
+                <div ng-message="valid">The entered value is not a date!</div>
+                <div ng-message="required">This date is required!</div>
+                <div ng-message="mindate">Date is too early!</div>
+                <div ng-message="maxdate">Date is too late!</div>
+            </div>
+        </md-input-container>
+        <md-input-container>
+                <md-datepicker ng-model="chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartDate"></md-datepicker>
+            <div ng-messages="myForm.chartEndDate.$error">
+                <div ng-message="valid">The entered value is not a date!</div>
+                <div ng-message="required">This date is required!</div>
+                <div ng-message="mindate">Date is too early!</div>
+                <div ng-message="maxdate">Date is too late!</div>
+            </div>
+        </md-input-container>
+        <div google-chart chart="myChartObject" style="height:auto; width:200%;"></div>
+    </form>
+
     <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
         <md-icon class="material-icons">keyboard_capslock</md-icon>
     </md-button>

@@ -483,8 +483,18 @@
                     allRowsForChart = [];
                     data.forEach(function (item) {
                         var currentName = item.Name;
-                        var timeInSeconds = parseInt(item.TotalWeekTimeInHours);
-                        var curRowArr = [currentName, timeInSeconds];
+
+                       // var timeInSeconds = parseInt(item.TotalTimeInHours);
+
+                        var timeInHours = parseInt(item.TotalTimeInHours);
+                        var temp = timeInHours;
+                        var hours = parseInt((temp / 60));
+                        var minutes = ((temp % 60) / 60);
+                        var temp = hours + minutes;
+                        console.log(temp);
+                        timeInHours = parseFloat(temp);
+                        timeInHours = Math.round(timeInHours * 1e2) / 1e2;
+                        var curRowArr = [currentName, timeInHours];
                         allRowsForChart.push(curRowArr);
                     });
                     buildDataTable(allRowsForChart);
@@ -505,6 +515,7 @@
                 options: { title: "Tasks per given time period" },
                 data: table
             };
+            console.log(table);
             $scope.myChartObject.options = {
                 title: 'Hours per week',
                 hAxis: {

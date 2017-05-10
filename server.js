@@ -220,11 +220,11 @@ function loadDataForGoogleChartDB(dateRange, res) {
             //+ "GROUP BY startTime "
             //+ "ORDER BY startTime;",
             "USE knockAppDB;" 
-            + " SELECT Name, (SUM(totalTime)) / 3600 as TotalWeekTimeInHours"
+            + " SELECT Name, (SUM(totalTime)) / 60 as TotalTimeInHours"
             + " FROM Tasks"  
             + " WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId"
             + " GROUP BY Name" 
-            + " ORDER BY TotalWeekTimeInHours;",
+            + " ORDER BY TotalTimeInHours;",
 
             function (err) {
                 if (err) {

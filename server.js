@@ -213,10 +213,19 @@ function loadDataForGoogleChartDB(dateRange, res) {
             //  BeginOfTheDayInSeconds
             //  TotalWeekTimeSeconds
             // Select weekly total time spent on tasks, grouped by initialStart dates converted to Monday for each week. 
-            "USE knockAppDB; SELECT startTime, (SUM(TotalTime))/3600 as TotalWeekTimeInHours FROM  "
-            + "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
-            + "GROUP BY startTime "
-            + "ORDER BY startTime;",
+
+            //TODO: delete this backup query when done with charts
+            //"USE knockAppDB; SELECT startTime, (SUM(TotalTime))/3600 as TotalWeekTimeInHours FROM  "
+            //+ "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
+            //+ "GROUP BY startTime "
+            //+ "ORDER BY startTime;",
+            "USE knockAppDB;" 
+            + " SELECT Name, (SUM(totalTime)) / 3600 as TotalWeekTimeInHours"
+            + " FROM Tasks"  
+            + " WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId"
+            + " GROUP BY Name" 
+            + " ORDER BY TotalWeekTimeInHours;",
+
             function (err) {
                 if (err) {
                     console.log("An error during loadTaskNameDictionaryDB: " + err);

@@ -482,9 +482,9 @@
                     var data = response.data;
                     allRowsForChart = [];
                     data.forEach(function (item) {
-                        var currentDate = new Date(item.startTime).toString();//new Date(1000 * item.BeginOfTheDayInSeconds);
+                        var currentName = item.Name;
                         var timeInSeconds = parseInt(item.TotalWeekTimeInHours);
-                        var curRowArr = [currentDate, timeInSeconds];
+                        var curRowArr = [currentName, timeInSeconds];
                         allRowsForChart.push(curRowArr);
                     });
                     buildDataTable(allRowsForChart);
@@ -496,19 +496,19 @@
         }
         function buildDataTable(allRowsForChart) {
             var table = new google.visualization.DataTable();
-            table.addColumn("string", "Date");
+            table.addColumn("string", "Name");
             table.addColumn("number", "Hours");
             table.addRows(allRowsForChart);
             $scope.myChartObject = {
-                type: "ColumnChart",
+                type: "BarChart",
                 cssStyle: "height:600px; width:100%",
-                options: { title: "Sales per Month" },
+                options: { title: "Tasks per given time period" },
                 data: table
             };
             $scope.myChartObject.options = {
                 title: 'Hours per week',
                 hAxis: {
-                    title: 'Date'
+                    title: 'Name'
                     //                            format: 'h:mm a',
                     //viewWindow: {
                     //    min: [7, 30, 0],
@@ -530,7 +530,6 @@
         //    onChange(" kuku chartEndDate");
         //});
         $scope.chartDatepickerChange = function () {
-                console.log("kuku: " + $scope.chartStartDate);
                 loadDataForGoogleChart();
         };
 

@@ -97,39 +97,36 @@
             <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid" onsubmit="addNewTask($event, newTaskForm.$valid)">NEW</md-button>
         </div>
         <md-button title="save as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
-
         <!--TODO: decode what to do with Stop All Btn-->
         <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
         <!-- TODO: REMOVE OR COMPLETE THIS <md-button ng-click="testUrl()">test url</md-button>-->
         <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
-
-
-
-
-
-          </form>
-
-    <form name="myForm" flex-gt-xs ng-if="showChart">
-        <md-input-container>
-                <md-datepicker ng-model="chartStartDate" md-min-date="-chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}"  name="chartStartDate"></md-datepicker>
-            <div ng-messages="myForm.chartStartDate.$error">
-                <div ng-message="valid">The entered value is not a date!</div>
-                <div ng-message="required">This date is required!</div>
-                <div ng-message="mindate">Date is too early!</div>
-                <div ng-message="maxdate">Date is too late!</div>
-            </div>
-        </md-input-container>
-        <md-input-container>
-                <md-datepicker ng-model="chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartDate"></md-datepicker>
-            <div ng-messages="myForm.chartEndDate.$error">
-                <div ng-message="valid">The entered value is not a date!</div>
-                <div ng-message="required">This date is required!</div>
-                <div ng-message="mindate">Date is too early!</div>
-                <div ng-message="maxdate">Date is too late!</div>
-            </div>
-        </md-input-container>
-        <div google-chart chart="myChartObject" style="height:auto; width:200%;"></div>
     </form>
+    <!--<md-datepicker ng-model="chartStartDate" name="chartStartDateCalendar" ng-change="onChangeTest()"></md-datepicker>-->
+    <div ng-if="showChart" layout="column">
+        <form name="chartCalendarForm" layout="row" >
+            <md-input-container>
+                <md-datepicker  ng-model="chartStartDate" md-min-date="chartmMinDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
+                <div ng-messages="chartCalendarForm.chartStartDateCalendar.$error">
+                    <div ng-message="valid">The entered value is not a date!</div>
+                    <div ng-message="required">This date is required!</div>
+                    <div ng-message="mindate">Date is too early!</div>
+                    <div ng-message="maxdate">Date is too late!</div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <md-datepicker ng-model="chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartEndDateCalendar"  ng-change="chartDatepickerChange()"></md-datepicker>
+                <div ng-messages="chartCalendarForm.chartEndDateCalendar.$error">
+                    <div ng-message="valid">The entered value is not a date!</div>
+                    <div ng-message="required">This date is required!</div>
+                    <div ng-message="mindate">Date is too early!</div>
+                    <div ng-message="maxdate">Date is too late!</div>
+                </div>
+            </md-input-container>
+        </form>
+        <div google-chart chart="myChartObject" style="height:auto; width:auto;"></div>
+    </div>
+
 
     <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
         <md-icon class="material-icons">keyboard_capslock</md-icon>

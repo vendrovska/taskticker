@@ -75,15 +75,10 @@ var pool = new ConnectionPool(poolConfig, connectionConfig);
 pool.on('error', function (err) {
     console.error("Tedious connection pool error: " + err);
 });
-
-
 connection.on('connect', function (err) {
     server.listen(port);
     console.log('connecting to DB: ' + err);
 });
-
-
-
 function createTaskDB(data, res) {
     pool.acquire(function (err, connection) {
         request = new Request(
@@ -202,7 +197,7 @@ function loadTaskNameDictionaryDB(res) {
     });
 };
 
-function loadDataForGoogleChartDB(res) {
+function loadDataForGoogleChartDB(dateRange, res) {
     pool.acquire(function (err, connection) {
         if (err) {
             console.error(err);
@@ -211,25 +206,25 @@ function loadDataForGoogleChartDB(res) {
         totalActiveConnections++;
         var RS = [];
         //TODO get rid of hardcoded values and pass user's parameters
-        var endDate = 1492792719;
-        var startDate = 1494280950;
+       // var endDate = 1492792719;
+        //var startDate = 0;
         request = new Request(
             // TODO: column names
             //  BeginOfTheDayInSeconds
             //  TotalWeekTimeSeconds
             // Select weekly total time spent on tasks, grouped by initialStart dates converted to Monday for each week. 
-            "USE knockAppDB SELECT startTime, (SUM(TotalTime))/60/60 as TotalWeekTimeInHours FROM  "
+            "USE knockAppDB; SELECT startTime, (SUM(TotalTime))/3600 as TotalWeekTimeInHours FROM  "
             + "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
             + "GROUP BY startTime "
-            + "ORDER BY startTime",
+            + "ORDER BY startTime;",
             function (err) {
                 if (err) {
                     console.log("An error during loadTaskNameDictionaryDB: " + err);
                 }
             });
         request.addParameter('googleUserId', TYPES.BigInt, googleUserId);
-        request.addParameter('startDate', TYPES.BigInt, startDate);
-        request.addParameter('endDate', TYPES.BigInt, endDate);
+        request.addParameter('startDate', TYPES.BigInt, dateRange.start);
+        request.addParameter('endDate', TYPES.BigInt, dateRange.end);
         connection.execSql(request);
 
         request.on('row', function (columns) {
@@ -405,7 +400,15 @@ var server = http.createServer(function (req, res) {
         loadTaskNameDictionaryDB(res);
     }
     else if (req.url === "/loadDataForGoogleChart") {
-        loadDataForGoogleChartDB(res);
+        var jsonString = '';
+        req.on('data', function (data) {
+            jsonString += data;
+        })
+        req.on('end', function () {
+            var dateRange = JSON.parse(jsonString); 
+            loadDataForGoogleChartDB(dateRange, res);
+        });
+       // loadDataForGoogleChartDB(res);
     }
     else if (req.url == "/tokensignin") {
         var jsonString = '';

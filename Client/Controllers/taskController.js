@@ -20,10 +20,16 @@
     function taskController($scope, $interval, $http, $anchorScroll, $location, $cookies, $mdDialog, googleChartApiPromise) {
         $scope.collapsed = false;
         $scope.date = new Date();
-        $scope.chartStartDate = new Date();//.getDate();
-        $scope.chartEndDate = new Date();
+        //to get date starting from the week ago
+        var weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        $scope.chartStartDate = new Date(weekAgo);
+        
+        
+        $scope.chartEndDate =   new Date();
+        $scope.chartmMinDate = new Date(19700130);
         $scope.chartmMaxDate = new Date(8640000000000000);
-        console.log($scope.chartStartDate);
+        //console.log($scope.chartStartDate);
         $scope.taskNamesDictionary = [];
         //$scope.taskNamesDictionary = ["Today", "The day before", "Older"]
         $scope.workItems = [];
@@ -460,60 +466,75 @@
             if (!$scope.showChart) {
                 $scope.showChart = true;
                 googleChartApiPromise.then(loadDataForGoogleChart);
-                function loadDataForGoogleChart() {
-                    $http.get("/loadDataForGoogleChart")
-                        .then(
-                            function (response) {
-                                var data = response.data;
-                                allRowsForChart = [];
-                                data.forEach(function (item) {
-                                    var currentDate = new Date(item.startTime).toString();//new Date(1000 * item.BeginOfTheDayInSeconds);
-                                    var timeInSeconds = parseInt(item.TotalWeekTimeInHours);
-                                    var curRowArr = [currentDate, timeInSeconds];
-                                    allRowsForChart.push(curRowArr);
-                                });
-                                buildDataTable(allRowsForChart);
-                            },
-                            function (error) {
-                                console.log("error in loadTaskNameDictionary: " + error);
-                            }
-                        )
-                }
-                function buildDataTable(allRowsForChart) {
-                    var table = new google.visualization.DataTable();
-                    table.addColumn("string", "Date");
-                    table.addColumn("number", "Hours");
-                    table.addRows(allRowsForChart);
-                    $scope.myChartObject = {
-                        type: "ColumnChart",
-                        cssStyle: "height:600px; width:100%",
-                        options: { title: "Sales per Month" },
-                        data: table
-                    };
-                    $scope.myChartObject.options = {
-                        title: 'Hours per week',
-                        hAxis: {
-                            title: 'Date'
-//                            format: 'h:mm a',
-                            //viewWindow: {
-                            //    min: [7, 30, 0],
-                            //    max: [17, 30, 0]
-                            //}
-                        },
-                        vAxis: {
-                            title: 'Time spent in hours'
-                        },
-                        timeline: {
-                            groupByRowLabel: true
-                        }
-                    };
-                };
-
             }
             else {
                 $scope.showChart = false;
             }
         };
+        function loadDataForGoogleChart() {
+            var timeRange = {
+                start: ($scope.chartStartDate.getTime()) / 1000,
+                end: ($scope.chartEndDate.getTime()) / 1000
+            };
+            $http.post("/loadDataForGoogleChart", timeRange)
+                .then(
+                function (response) {
+                    var data = response.data;
+                    allRowsForChart = [];
+                    data.forEach(function (item) {
+                        var currentDate = new Date(item.startTime).toString();//new Date(1000 * item.BeginOfTheDayInSeconds);
+                        var timeInSeconds = parseInt(item.TotalWeekTimeInHours);
+                        var curRowArr = [currentDate, timeInSeconds];
+                        allRowsForChart.push(curRowArr);
+                    });
+                    buildDataTable(allRowsForChart);
+                },
+                function (error) {
+                    console.log("error in loadTaskNameDictionary: " + error);
+                }
+                )
+        }
+        function buildDataTable(allRowsForChart) {
+            var table = new google.visualization.DataTable();
+            table.addColumn("string", "Date");
+            table.addColumn("number", "Hours");
+            table.addRows(allRowsForChart);
+            $scope.myChartObject = {
+                type: "ColumnChart",
+                cssStyle: "height:600px; width:100%",
+                options: { title: "Sales per Month" },
+                data: table
+            };
+            $scope.myChartObject.options = {
+                title: 'Hours per week',
+                hAxis: {
+                    title: 'Date'
+                    //                            format: 'h:mm a',
+                    //viewWindow: {
+                    //    min: [7, 30, 0],
+                    //    max: [17, 30, 0]
+                    //}
+                },
+                vAxis: {
+                    title: 'Time spent in hours'
+                },
+                timeline: {
+                    groupByRowLabel: true
+                }
+            };
+        };
+        //$scope.$watch("chartStartDate", function () {
+        //    onChange(" kuku chartStartDate");
+        //});
+        //$scope.$watch("chartEndDate", function () {
+        //    onChange(" kuku chartEndDate");
+        //});
+        $scope.chartDatepickerChange = function () {
+                console.log("kuku: " + $scope.chartStartDate);
+                loadDataForGoogleChart();
+        };
+
+
 
         //TODO: remove keepAlive when switched to other server. Need it now only because Azure puts server to sleep.
         //function keepAlive() {

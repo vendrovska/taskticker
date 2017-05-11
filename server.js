@@ -224,7 +224,7 @@ function loadDataForGoogleChartDB(dateRange, res) {
             + " FROM Tasks"
             + " WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId"
             + " GROUP BY Name"
-            + " ORDER BY TotalTimeInHours;",
+            + " ORDER BY TotalTimeInHours DESC;",
 
             function (err) {
                 if (err) {

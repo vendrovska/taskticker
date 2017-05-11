@@ -104,29 +104,46 @@
     </form>
     <!--<md-datepicker ng-model="chartStartDate" name="chartStartDateCalendar" ng-change="onChangeTest()"></md-datepicker>-->
     <div ng-if="showChart" layout="column" layout-margin>
-        <form name="chartCalendarForm" layout="row">
-            <md-input-container>
-                <md-datepicker ng-model="$parent.chartStartDate" md-min-date="chartmMinDate" md-max-date="chartEndDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
-                <div ng-messages="chartCalendarForm.chartStartDateCalendar.$error">
-                    <div ng-message="valid">The entered value is not a date!</div>
-                    <div ng-message="required">This date is required!</div>
-                    <div ng-message="mindate">Date is too early!</div>
-                    <div ng-message="maxdate">Date is too late!</div>
-                </div>
-            </md-input-container>
-            <md-input-container>
-                <md-datepicker ng-model="$parent.chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartEndDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
-                <div ng-messages="chartCalendarForm.chartEndDateCalendar.$error">
-                    <div ng-message="valid">The entered value is not a date!</div>
-                    <div ng-message="required">This date is required!</div>
-                    <div ng-message="mindate">Date is too early!</div>
-                    <div ng-message="maxdate">Date is too late!</div>
-                </div>
-            </md-input-container>
-        </form>
-        <div google-chart chart="myChartObject" ng-model="myChartObject" style="min-height: 350px"></div>
+        <div ng-if="userInfo.signedIn" >
+            <form name="chartCalendarForm" layout="row">
+                <md-input-container>
+                    <md-datepicker ng-model="$parent.chartStartDate" md-min-date="chartmMinDate" md-max-date="chartEndDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
+                    <div ng-messages="chartCalendarForm.chartStartDateCalendar.$error">
+                        <div ng-message="valid">The entered value is not a date!</div>
+                        <div ng-message="required">This date is required!</div>
+                        <div ng-message="mindate">Date is too early!</div>
+                        <div ng-message="maxdate">Date is too late!</div>
+                    </div>
+                </md-input-container>
+                <md-input-container>
+                    <md-datepicker ng-model="$parent.chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartEndDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
+                    <div ng-messages="chartCalendarForm.chartEndDateCalendar.$error">
+                        <div ng-message="valid">The entered value is not a date!</div>
+                        <div ng-message="required">This date is required!</div>
+                        <div ng-message="mindate">Date is too early!</div>
+                        <div ng-message="maxdate">Date is too late!</div>
+                    </div>
+                </md-input-container>
+            </form>
+            <div google-chart chart="myChartObject" ng-model="myChartObject" style="min-height: 350px"></div>
+        </div>
+        
     </div>
-
+    <div ng-if="showChart && !userInfo.signedIn">
+        <div class="md-dialog-container" id="myDialog">
+            <md-dialog layout-padding>
+                <h2>Pre-Rendered Dialog</h2>
+                <p>
+                    This is a pre-rendered dialog, which means that <code>$mdDialog</code> doesn't compile its
+                    template on each opening.
+                    <br /><br />
+                    The Dialog Element is a static element in the DOM, which is just visually hidden.<br />
+                    Once the dialog opens, we just fetch the element from the DOM into our dialog and upon close
+                    we restore the element back into its old DOM position.
+                </p>
+            </md-dialog>
+        </div>
+    </div>
 
     <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
         <md-icon class="material-icons">keyboard_capslock</md-icon>

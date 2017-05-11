@@ -24,12 +24,9 @@
         var weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         $scope.chartStartDate = new Date(weekAgo);
-        
-        
-        $scope.chartEndDate =   new Date();
+        $scope.chartEndDate = new Date();
         $scope.chartmMinDate = new Date(19700130);
         $scope.chartmMaxDate = new Date(8640000000000000);
-        //console.log($scope.chartStartDate);
         $scope.taskNamesDictionary = [];
         //$scope.taskNamesDictionary = ["Today", "The day before", "Older"]
         $scope.workItems = [];
@@ -187,7 +184,7 @@
             $("#newItemFormId textarea").val('');
         };
         $scope.addNewTask = function (event, formValid) {
-            if (event.keyCode == 13 || event.type == "submit" ) {
+            if (event.keyCode == 13 || event.type == "submit") {
                 var minLength = $("#newItemFormId textarea").text.length;
                 if (formValid && minLength > 0) {
                     addNewTaskHelper();
@@ -476,6 +473,9 @@
                 start: ($scope.chartStartDate.getTime()) / 1000,
                 end: ($scope.chartEndDate.getTime()) / 1000
             };
+            console.log(timeRange);
+            console.log($scope.chartStartDate);
+            console.log($scope.chartEndDate);
             $http.post("/loadDataForGoogleChart", timeRange)
                 .then(
                 function (response) {
@@ -484,19 +484,19 @@
                     data.forEach(function (item) {
                         var currentName = item.Name;
 
-                       // var timeInSeconds = parseInt(item.TotalTimeInHours);
+                        // var timeInSeconds = parseInt(item.TotalTimeInHours);
 
                         var timeInHours = parseInt(item.TotalTimeInHours);
                         var temp = timeInHours;
                         var hours = parseInt((temp / 60));
                         var minutes = ((temp % 60) / 60);
                         var temp = hours + minutes;
-                        console.log(temp);
                         timeInHours = parseFloat(temp);
                         timeInHours = Math.round(timeInHours * 1e2) / 1e2;
                         var curRowArr = [currentName, timeInHours];
                         allRowsForChart.push(curRowArr);
                     });
+                    console.log(allRowsForChart);
                     buildDataTable(allRowsForChart);
                 },
                 function (error) {
@@ -512,19 +512,15 @@
             $scope.myChartObject = {
                 type: "BarChart",
                 cssStyle: "height:600px; width:100%",
-                options: { title: "Tasks per given time period" },
+                options: {
+                    title: "Tasks per given time period"
+                },
                 data: table
             };
-            console.log(table);
             $scope.myChartObject.options = {
                 title: 'Hours per week',
                 hAxis: {
                     title: 'Name'
-                    //                            format: 'h:mm a',
-                    //viewWindow: {
-                    //    min: [7, 30, 0],
-                    //    max: [17, 30, 0]
-                    //}
                 },
                 vAxis: {
                     title: 'Time spent in hours'
@@ -541,7 +537,7 @@
         //    onChange(" kuku chartEndDate");
         //});
         $scope.chartDatepickerChange = function () {
-                loadDataForGoogleChart();
+            loadDataForGoogleChart();
         };
 
 

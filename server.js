@@ -206,7 +206,7 @@ function loadDataForGoogleChartDB(dateRange, res) {
         totalActiveConnections++;
         var RS = [];
         //TODO get rid of hardcoded values and pass user's parameters
-       // var endDate = 1492792719;
+        // var endDate = 1492792719;
         //var startDate = 0;
         request = new Request(
             // TODO: column names
@@ -219,11 +219,11 @@ function loadDataForGoogleChartDB(dateRange, res) {
             //+ "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
             //+ "GROUP BY startTime "
             //+ "ORDER BY startTime;",
-            "USE knockAppDB;" 
+            "USE knockAppDB;"
             + " SELECT Name, (SUM(totalTime)) / 60 as TotalTimeInHours"
-            + " FROM Tasks"  
+            + " FROM Tasks"
             + " WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId"
-            + " GROUP BY Name" 
+            + " GROUP BY Name"
             + " ORDER BY TotalTimeInHours;",
 
             function (err) {
@@ -414,10 +414,10 @@ var server = http.createServer(function (req, res) {
             jsonString += data;
         })
         req.on('end', function () {
-            var dateRange = JSON.parse(jsonString); 
+            var dateRange = JSON.parse(jsonString);
             loadDataForGoogleChartDB(dateRange, res);
         });
-       // loadDataForGoogleChartDB(res);
+        // loadDataForGoogleChartDB(res);
     }
     else if (req.url == "/tokensignin") {
         var jsonString = '';

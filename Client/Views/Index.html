@@ -104,9 +104,9 @@
     </form>
     <!--<md-datepicker ng-model="chartStartDate" name="chartStartDateCalendar" ng-change="onChangeTest()"></md-datepicker>-->
     <div ng-if="showChart" layout="column">
-        <form name="chartCalendarForm" layout="row" >
+        <form name="chartCalendarForm" layout="row">
             <md-input-container>
-                <md-datepicker  ng-model="chartStartDate" md-min-date="chartmMinDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
+                <md-datepicker ng-model="$parent.chartStartDate" md-min-date="chartmMinDate" md-max-date="chartEndDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
                 <div ng-messages="chartCalendarForm.chartStartDateCalendar.$error">
                     <div ng-message="valid">The entered value is not a date!</div>
                     <div ng-message="required">This date is required!</div>
@@ -115,7 +115,7 @@
                 </div>
             </md-input-container>
             <md-input-container>
-                <md-datepicker ng-model="chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartEndDateCalendar"  ng-change="chartDatepickerChange()"></md-datepicker>
+                <md-datepicker ng-model="$parent.chartEndDate" md-min-date="chartStartDate" md-max-date="chartmMaxDate" md-placeholder="{{chartStartDate}}" name="chartEndDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
                 <div ng-messages="chartCalendarForm.chartEndDateCalendar.$error">
                     <div ng-message="valid">The entered value is not a date!</div>
                     <div ng-message="required">This date is required!</div>
@@ -124,7 +124,7 @@
                 </div>
             </md-input-container>
         </form>
-        <div google-chart chart="myChartObject"></div>
+        <div google-chart chart="myChartObject" ng-model="myChartObject" style="min-height: 350px"></div>
     </div>
 
 

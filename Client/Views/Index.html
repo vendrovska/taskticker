@@ -103,7 +103,7 @@
         <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()"><md-icon class="material-icons">insert_chart</md-icon></md-button>
     </form>
     <!--<md-datepicker ng-model="chartStartDate" name="chartStartDateCalendar" ng-change="onChangeTest()"></md-datepicker>-->
-    <div ng-if="showChart" layout="column">
+    <div ng-if="showChart" layout="column" layout-margin>
         <form name="chartCalendarForm" layout="row">
             <md-input-container>
                 <md-datepicker ng-model="$parent.chartStartDate" md-min-date="chartmMinDate" md-max-date="chartEndDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>

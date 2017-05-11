@@ -94,9 +94,7 @@
                 // removing a cookie
                 $cookies.remove('userid');
                 delete $cookies['userid'];
-                //console.log($cookies.get('userid'));
                 resetPageForNewUser();
-                //console.log('User signed out.');
             });
 
 
@@ -190,8 +188,7 @@
                     addNewTaskHelper();
                 }
             }
-
-            console.log();
+            
         };
 
 
@@ -210,14 +207,6 @@
                             }
                         });
                     }
-                    //for (var i = 0; i < itemsArr.length; i++) {
-                    //    for (var j = i; j < itemsArr[i].Length; j++){ }
-                    //    if (itemsArr[i][j].Id == id) {
-                    //        itemsArr.splice(i, 1);
-                    //        break;
-                    //    }
-                    //}
-                    //console.log("deleted task with ID: " + id);
                 })
                 .error(function (data) {
                     console.error("error, didn't delete the task" + data);
@@ -352,7 +341,6 @@
             task.Id = parseInt(task.Id);
             $http.post('/updateTask', task)
                 .success(function (data) {
-                    console.log("updated task " + data);
                 })
                 .error(function (datag) {
                     console.log("keep alive foo got broken " + data);
@@ -378,7 +366,6 @@
         $scope.updateTaskName = function (item) {
             var id = 'p' + item.Id;
             var newName = $('#' + id).text().trim();
-            console.log(newName);
 
             if (newName.length > 256 || newName.length <= 0) {
                 alert('Sorry, the description must not be more than 2000 characters long');
@@ -417,7 +404,6 @@
             }
             //console.log(item['TotalTime'].add(n).minutes());
             updateTask(item);
-            console.log(item['TotalTime']);
 
         };
         $scope.incrementTaskTime = function (n, item) {
@@ -448,8 +434,7 @@
                 event.preventDefault();
         });
         $("p").keypress(function (event) {
-
-            console.log('md-card-title');
+           
             if (event.keyCode === 13) {
 
                 event.preventDefault();
@@ -473,9 +458,6 @@
                 start: ($scope.chartStartDate.getTime()) / 1000,
                 end: ($scope.chartEndDate.getTime()) / 1000
             };
-            console.log(timeRange);
-            console.log($scope.chartStartDate);
-            console.log($scope.chartEndDate);
             $http.post("/loadDataForGoogleChart", timeRange)
                 .then(
                 function (response) {
@@ -496,7 +478,6 @@
                         var curRowArr = [currentName, timeInHours];
                         allRowsForChart.push(curRowArr);
                     });
-                    console.log(allRowsForChart);
                     buildDataTable(allRowsForChart);
                 },
                 function (error) {
@@ -518,12 +499,12 @@
                 data: table
             };
             $scope.myChartObject.options = {
-                title: 'Hours per week',
+                title: 'Hours per time range',
                 hAxis: {
-                    title: 'Name'
+                    title: 'Total Time Spent'
                 },
                 vAxis: {
-                    title: 'Time spent in hours'
+                    title: 'Task Name'
                 },
                 timeline: {
                     groupByRowLabel: true

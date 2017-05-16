@@ -3,7 +3,7 @@
 (function () {
     'use strict';
 
-    angular.module('knockApp', ['ngMaterial', 'ngCsv', 'ngSanitize', 'ngCookies', 'btford.socket-io', 'googlechart'])
+    angular.module('knockApp', ['ngMaterial', 'ngCsv', 'ngSanitize', 'ngCookies', 'btford.socket-io', 'googlechart'])//, 'angular-carousel'])
         .controller('taskController', taskController)
         .directive('autoComplete', function ($timeout) {
             return function (scope, iElement, iAttrs) {

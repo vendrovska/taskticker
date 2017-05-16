@@ -336,6 +336,30 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
+    else if (req.url === "/Directives/angular-touch.js") {
+        fs.readFile("Client/Directives/angular-touch.js", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write("Couldn't find angular-touch js. Sorry");
+            } else {
+                res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                res.write(pgResp);
+            }
+            res.end();
+        });
+    }
+    else if (req.url === "/Directives/angular-carousel.js") {
+        fs.readFile("Client/Directives/angular-carousel.js.js", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write("Couldn't find angular-carousel js. Sorry");
+            } else {
+                res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                res.write(pgResp);
+            }
+            res.end();
+        });
+    }
     else if (req.url === "/Styles/main.css") {
         fs.readFile("Client/Styles/main.css", function (error, pgResp) {
             if (error) {
@@ -348,18 +372,18 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
-    //else if (req.url === "/Views/NewGuest.tmpl.html") {
-    //    fs.readFile("Views/NewGuest.tmpl.html", function (error, pgResp) {
-    //        if (error) {
-    //            res.writeHead(404);
-    //            res.write("Couldn't find stylesheet. Sorry");
-    //        } else {
-    //            res.writeHead(200, { 'Content-Type': 'text/html' });
-    //            res.write(pgResp);
-    //        }
-    //        res.end();
-    //    });
-    //}
+    else if (req.url === "/Styles/angular-carousel.css") {
+        fs.readFile("Client/Styles/angular-carousel.css", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write("Couldn't find stylesheet. Sorry");
+            } else {
+                res.writeHead(200, { 'Content-Type': 'text/css' });
+                res.write(pgResp);
+            }
+            res.end();
+        });
+    }
     else if (req.url === "/Styles/Images/favicon.ico") {
         fs.readFile("Client/Styles/Images/favicon.ico", function (error, pgResp) {
             if (error) {
@@ -372,6 +396,30 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
+    else if (req.url === "/Styles/Images/favicon.ico") {
+        fs.readFile("Client/Styles/Images/favicon.ico", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write("Couldn't find the favicon. Sorry");
+            } else {
+                res.writeHead(200, { 'Content-Type': 'image/ico' });
+                res.write(pgResp);
+            }
+            res.end();
+        });
+    }
+    //else if (req.url === "/Styles/Styles/ngFader.css") {
+    //    fs.readFile("Client/Styles/ngFader.css", function (error, pgResp) {
+    //        if (error) {
+    //            res.writeHead(404);
+    //            res.write("Couldn't find the ngFader css. Sorry");
+    //        } else {
+    //            res.writeHead(200, { 'Content-Type': 'image/ico' });
+    //            res.write(pgResp);
+    //        }
+    //        res.end();
+    //    });
+    //}
     else if (req.url === "/createTask") {
         var jsonString = '';
         req.on('data', function (data) {

@@ -117,4 +117,15 @@ md-list-item {
 #welcomeModal div {
 background-color:red!important;
 }
+footer {
+    position: absolute;
+    bottom: 1em;
+}
+    footer a {
+        text-decoration: none;
+        font-family:Arial;
+    }
+        footer a:hover {
+        opacity:.7;
+        }
     /*Animation for collapse/expand*/

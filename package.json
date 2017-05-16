@@ -7,6 +7,7 @@
     "name": "Tania"
   },
   "dependencies": {
+    "angular-carousel": "^1.0.2",
     "angular-google-chart": "^0.1.0",
     "angular-socket-io": "^0.7.0",
     "cookies": "^0.7.0",

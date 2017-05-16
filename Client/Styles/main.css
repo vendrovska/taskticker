@@ -114,4 +114,7 @@ md-list-item {
     #gotoThePageTop .material-icons {
         color: white !important;
     }
+#welcomeModal div {
+background-color:red!important;
+}
     /*Animation for collapse/expand*/

@@ -63,6 +63,9 @@ dbPassword=467874108Tania!</Environment>
     <Content Include="Client\Styles\main.css" />
     <Content Include="Client\Styles\xeditable.css" />
     <Content Include="Client\Views\Index.html" />
+    <Content Include="Client\Views\NewGuest.tmpl.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="Web.config" />

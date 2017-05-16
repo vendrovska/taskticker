@@ -348,6 +348,18 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
+    //else if (req.url === "/Views/NewGuest.tmpl.html") {
+    //    fs.readFile("Views/NewGuest.tmpl.html", function (error, pgResp) {
+    //        if (error) {
+    //            res.writeHead(404);
+    //            res.write("Couldn't find stylesheet. Sorry");
+    //        } else {
+    //            res.writeHead(200, { 'Content-Type': 'text/html' });
+    //            res.write(pgResp);
+    //        }
+    //        res.end();
+    //    });
+    //}
     else if (req.url === "/Styles/Images/favicon.ico") {
         fs.readFile("Client/Styles/Images/favicon.ico", function (error, pgResp) {
             if (error) {
@@ -393,6 +405,7 @@ var server = http.createServer(function (req, res) {
         req.on('end', function () {
             var task = JSON.parse(jsonString);
             updateTaskDB(task);
+            io.to('838563584091570176').emit('update', task);
         });
         res.end();
     }

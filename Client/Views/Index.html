@@ -104,7 +104,7 @@
     </form>
     <!--<md-datepicker ng-model="chartStartDate" name="chartStartDateCalendar" ng-change="onChangeTest()"></md-datepicker>-->
     <div ng-if="showChart" layout="column" layout-margin>
-        <div ng-if="userInfo.signedIn" >
+        <div ng-if="userInfo.signedIn">
             <form name="chartCalendarForm" layout="row">
                 <md-input-container>
                     <md-datepicker ng-model="$parent.chartStartDate" md-min-date="chartmMinDate" md-max-date="chartEndDate" md-placeholder="{{chartStartDate}}" name="chartStartDateCalendar" ng-change="chartDatepickerChange()"></md-datepicker>
@@ -127,20 +127,17 @@
             </form>
             <div google-chart chart="myChartObject" ng-model="myChartObject" style="min-height: 350px"></div>
         </div>
-        
+
     </div>
-    <div ng-if="showChart && !userInfo.signedIn">
+    <!--<div ng-if="!userInfo.signedIn">
+        <md-button class="md-primary md-raised" ng-click="showAdvanced($event)">
+            Custom Dialog
+        </md-button>
+    </div>-->
+    <div style="visibility: hidden">
         <div class="md-dialog-container" id="myDialog">
-            <md-dialog layout-padding>
+            <md-dialog layout-padding="">
                 <h2>Pre-Rendered Dialog</h2>
-                <p>
-                    This is a pre-rendered dialog, which means that <code>$mdDialog</code> doesn't compile its
-                    template on each opening.
-                    <br /><br />
-                    The Dialog Element is a static element in the DOM, which is just visually hidden.<br />
-                    Once the dialog opens, we just fetch the element from the DOM into our dialog and upon close
-                    we restore the element back into its old DOM position.
-                </p>
             </md-dialog>
         </div>
     </div>
@@ -203,4 +200,69 @@
         </div>
     </footer>
 </body>
+
 </html>
+<script type="text/ng-template" id="dialog1.tmpl.html">
+    <md-dialog aria-label="Mango (Fruit)">
+        <form ng-cloak>
+            <!--<md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Mango (Fruit)</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>-->
+
+            <md-dialog-content id="welcomeModal" style="background-color:#24292e; color:white!important; font-family: Arial;" >
+                <div class="md-dialog-content">
+                    <h2>Welcome</h2>
+                    <p>
+                        TaskTicker will help you to keep track of all your daily activities.
+                        You can either sign in with your existing Google account or use it as a guest.
+                    </p>
+                    <p>
+                        Our guests can:
+                        <ul>
+                            <li>
+                                Create new tasks
+                            </li>
+                            <li>
+                                Download them as .csv files
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        Signed In users can:
+                        <ul>
+                            <li>
+                                Edit  and update tasks
+                            </li>
+                            <li>
+                                See the history of all tasks
+                            </li>
+                            <li>
+                                Visualize your tasks’ data
+                            </li>
+                            <li>
+                                Connect to your data from any location
+                            </li>
+                        </ul>
+                    </p>
+
+
+                </div>
+            </md-dialog-content>
+
+            <md-dialog-actions layout="row" layout-align="center">
+                <!--TODO Complete google sign in <md-button>
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                </md-button>-->
+                <md-button ng-click="answer('not useful')">
+                    Got it!
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>

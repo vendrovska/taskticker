@@ -19,7 +19,17 @@
         });
     function taskController($scope, $interval, $http, $anchorScroll, $location, $cookies, $mdDialog, googleChartApiPromise) {
         $scope.collapsed = false;
+
         $scope.date = new Date();
+        $scope.currentDay = new Date();
+        $scope.currentDay = $scope.currentDay.getTime() / 1000;
+        $scope.dayInSeconds = 86400;
+        // $scope.todayDayStart = $scope.date;
+        //$scope.todayDayStart.setHours(0, 0, 0, 0);
+        //$scope.todayDayEnd = new Date();
+        //$scope.todayDayEnd.setDate($scope.todayDayEnd.getDate() + 1);
+        //$scope.todayDayStart = $scope.todayDayStart.getTime() / 1000;
+        // console.log($scope.todayDayEnd);
         //to get date starting from the week ago
         var weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
@@ -95,7 +105,7 @@
                 auth2.disconnect();
                 $cookies.remove('userid', { path: '/' });
                 delete $cookies['userid'];
-               // $cookies.put('userid','0');
+                // $cookies.put('userid','0');
                 resetPageForNewUser();
             });
 
@@ -190,7 +200,7 @@
                     addNewTaskHelper();
                 }
             }
-            
+
         };
 
 
@@ -266,11 +276,16 @@
                         item.LastStart = parseInt(item.LastStart);
                         item.InitialStart = parseInt(item.InitialStart);
 
+                        // caclulate additional time during which the item was running
                         if (item.TimerOn == 1) {
                             var mockEnd = Math.floor((new Date().getTime()) / 1000);
                             //TODO check if the item wasn't running for too long
                             var timeGone = Math.floor((mockEnd - item.LastStart));
                             item.TotalTime += timeGone;
+                        }
+
+                        checkAndArchiveItem(item);
+                        if (item.TimerOn == 1) {
                             startStopwatchHelper(item);
                         }
 
@@ -301,6 +316,20 @@
                 );
         };
 
+        // Stop and archive long-running items (we want them to run not longer than 24hrs)
+        function checkAndArchiveItem(item) {
+            if (new Date().getTime() / 1000 - item.InitialStart > 86400) {
+                console.log("archiving item");
+                item.Archived = true;
+                item.TimerOn = 0;
+                item.TotalTime = Math.min(item.TotalTime, 86400);
+                if (item.Timer !== null && item.Timer !== undefined) {
+                    $interval.cancel(item.Timer);
+                }
+                updateTask(item);
+            }
+        }
+
         //stop all task for the user TODO:complete this, doesn't work on server at the moment
         $scope.stopAllTasks = function () {
             //$http.post('/stopAllTasks')
@@ -328,6 +357,7 @@
                 item.Hours = Math.floor(item.TotalTime / 3600);
                 item.Minutes = Math.floor((item.TotalTime - item.Hours * 3600) / 60);
                 item.Seconds = item.TotalTime - (item.Hours * 3600 + item.Minutes * 60);
+                checkAndArchiveItem(item);
                 //$scope.$apply();
             }
 
@@ -524,10 +554,9 @@
         };
 
         //SECONDARY HELPERS
-        $scope.showAdvanced = function (ev) {
-            showAdvancedHelper(ev);
+        $scope.showAdvanced = function () {
+            showAdvancedHelper();
         };
-
         function showAdvancedHelper() {
             $mdDialog.show({
                 controller: DialogController,
@@ -537,11 +566,12 @@
                 clickOutsideToClose: true,
                 fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
             })
-                .then(function (answer) {
-                    $scope.status = 'You said the information was "' + answer + '".';
-                }, function () {
-                    $scope.status = 'You cancelled the dialog.';
-                });
+
+                //.then(function (answer) {
+                //    $scope.status = 'You said the information was "' + answer + '".';
+                //}, function () {
+                //    $scope.status = 'You cancelled the dialog.';
+                //});
         }
         showAdvancedHelper();
         function DialogController($scope, $mdDialog) {

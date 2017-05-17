@@ -131,6 +131,9 @@ function deleteTaskDB(id) {
 }
 function updateTaskDB(task) {
     pool.acquire(function (err, connection) {
+        if (connection === undefined) {
+            console.log("Failed to get connection: " + err);
+        }
         request = new Request(
             "USE knockAppDB UPDATE Tasks SET Name = @Name, TimerOn = @TimerOn, LastStart = @LastStart, TotalTime = @TotalTime, Hours = @Hours, Minutes = @Minutes, Seconds = @Seconds WHERE Id = @Id;",
             function (err) {
@@ -492,15 +495,17 @@ var server = http.createServer(function (req, res) {
             client.verifyIdToken(token, CLIENT_ID, function (e, login) {
                 var payload = login.getPayload();
                 userid = payload['sub'];
-                cookies.set('userid', userid);//TODO add expiration date to it
+                cookies.set('userid', userid, { httpOnly: false });//TODO add expiration date to it
                 res.end();
             });
         });
-        //res.cookies.get;
-
-
-
     }
+    //else if (req.url == "/firsttimevisitor") {
+    //        //cheking that the user token is valid
+    //            var visitedTaskTicker = true;
+    //            cookies.set('visitedTaskTicker', visitedTaskTicker);//TODO add expiration date to it
+    //            console.log(visitedTaskTicker);
+    //}
 });
 //Socket.io 
 //io.on('connection', function (socket) {

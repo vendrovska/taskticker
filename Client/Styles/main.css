@@ -118,7 +118,7 @@ md-list-item {
 background-color:red!important;
 }
 footer {
-    position: absolute;
+    position: fixed;
     bottom: 1em;
 }
     footer a {

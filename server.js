@@ -2,8 +2,6 @@
 
 var io;
 
-
-
 var port = process.env.port || 80;//1337
 var fs = require('fs');
 var sql = require('mssql');
@@ -79,7 +77,7 @@ connection.on('connect', function (err) {
     server.listen(port);
     console.log('connecting to DB: ' + err);
 });
-function createTaskDB(data, res) {
+function createTaskDB(newTask, res, socketId) {
     pool.acquire(function (err, connection) {
         request = new Request(
             "USE knockAppDB INSERT INTO Tasks (Name, InitialStart, LastStart, TotalTime, Hours, Minutes, Seconds, TimerOn, googleUserId) OUTPUT INSERTED.Id VALUES ( @Name, @InitialStart, @LastStart, @TotalTime, @Hours, @Minutes, @Seconds, @TimerOn, @googleUserId);",
@@ -89,14 +87,14 @@ function createTaskDB(data, res) {
                     console.log("en error during insertion: " + err);
                 }
             });
-        request.addParameter('Name', TYPES.NVarChar, data['Name']);
-        request.addParameter('InitialStart', TYPES.BigInt, data['InitialStart']);
-        request.addParameter('LastStart', TYPES.BigInt, data['LastStart']);
-        request.addParameter('TotalTime', TYPES.BigInt, data['TotalTime']);
-        request.addParameter('Hours', TYPES.BigInt, data['Hours']);
-        request.addParameter('Minutes', TYPES.BigInt, data['Minutes']);
-        request.addParameter('Seconds', TYPES.BigInt, data['Seconds']);
-        request.addParameter('TimerOn', TYPES.Bit, data['TimerOn']);
+        request.addParameter('Name', TYPES.NVarChar, newTask['Name']);
+        request.addParameter('InitialStart', TYPES.BigInt, newTask['InitialStart']);
+        request.addParameter('LastStart', TYPES.BigInt, newTask['LastStart']);
+        request.addParameter('TotalTime', TYPES.BigInt, newTask['TotalTime']);
+        request.addParameter('Hours', TYPES.BigInt, newTask['Hours']);
+        request.addParameter('Minutes', TYPES.BigInt, newTask['Minutes']);
+        request.addParameter('Seconds', TYPES.BigInt, newTask['Seconds']);
+        request.addParameter('TimerOn', TYPES.Bit, newTask['TimerOn']);
         request.addParameter('googleUserId', TYPES.BigInt, googleUserId);
 
         var insertedID;
@@ -109,13 +107,16 @@ function createTaskDB(data, res) {
             res.write(JSON.stringify(insertedID));
             res.end();
             connection.release();
-
+            newTask.Id = insertedID;
+            io.to(googleUserId).emit('create', {
+                task: newTask, socketId: socketId
+            });
         });
         connection.execSql(request);
     });
 
 }
-function deleteTaskDB(id) {
+function deleteTaskDB(id, res, socketId) {
     pool.acquire(function (err, connection) {
         request = new Request(
             "USE knockAppDB DELETE FROM Tasks WHERE Id = @id;",
@@ -126,12 +127,19 @@ function deleteTaskDB(id) {
             });
         request.addParameter('Id', TYPES.Int, id);
         connection.execSql(request);
-    });
+        request.on('doneProc', function (rowCount, more, returnStatus, rows) {
+            res.end();
+            connection.release();
+            io.to(googleUserId).emit('delete', {
+                taskId: id, socketId: socketId
+            });
+        });
+});
 
 }
 function updateTaskDB(task) {
     pool.acquire(function (err, connection) {
-        if (connection === undefined) {
+        if (connection == undefined) {
             console.log("Failed to get connection: " + err);
         }
         request = new Request(
@@ -151,6 +159,9 @@ function updateTaskDB(task) {
         request.addParameter('Seconds', TYPES.BigInt, task['Seconds']);
         request.addParameter('TimerOn', TYPES.Bit, task['TimerOn']);
         connection.execSql(request);
+        io.to(googleUserId).emit('update', {
+            task: task, socketId: cookies.get('socketId')
+        });
     });
 
 }
@@ -196,7 +207,6 @@ function loadTaskNameDictionaryDB(res) {
                 connection.release();
             }
         });
-        // connection.execSql(request);
     });
 };
 
@@ -208,35 +218,27 @@ function loadDataForGoogleChartDB(dateRange, res) {
         }
         totalActiveConnections++;
         var RS = [];
-        //TODO get rid of hardcoded values and pass user's parameters
-        // var endDate = 1492792719;
-        //var startDate = 0;
         request = new Request(
-            // TODO: column names
-            //  BeginOfTheDayInSeconds
-            //  TotalWeekTimeSeconds
-            // Select weekly total time spent on tasks, grouped by initialStart dates converted to Monday for each week. 
-
             //TODO: delete this backup query when done with charts
             //"USE knockAppDB; SELECT startTime, (SUM(TotalTime))/3600 as TotalWeekTimeInHours FROM  "
             //+ "(SELECT dateadd(week, InitialStart / 3600 / 24 / 7, '19691230') as startTime, TotalTime FROM Tasks  WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId) as T "
             //+ "GROUP BY startTime "
             //+ "ORDER BY startTime;",
             "USE knockAppDB;"
-            + " SELECT Name, (SUM(totalTime)) / 60 as TotalTimeInHours"
+            + " SELECT Name, (SUM(totalTime)) / 60 as TotalTimeInMinutes"
             + " FROM Tasks"
             + " WHERE InitialStart BETWEEN @startDate AND @endDate AND googleUserId = @googleUserId"
             + " GROUP BY Name"
-            + " ORDER BY TotalTimeInHours DESC;",
+            + " ORDER BY TotalTimeInMinutes DESC;",
 
             function (err) {
                 if (err) {
-                    console.log("An error during loadTaskNameDictionaryDB: " + err);
+                    console.log("An error during loadDataForGoogleChartDB: " + err);
                 }
             });
         request.addParameter('googleUserId', TYPES.BigInt, googleUserId);
-        request.addParameter('startDate', TYPES.BigInt, dateRange.start);
-        request.addParameter('endDate', TYPES.BigInt, dateRange.end);
+        request.addParameter('startDate', TYPES.BigInt, parseInt(dateRange.start));
+        request.addParameter('endDate', TYPES.BigInt, parseInt(dateRange.end));
         connection.execSql(request);
 
         request.on('row', function (columns) {
@@ -339,30 +341,30 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
-    else if (req.url === "/Directives/angular-touch.js") {
-        fs.readFile("Client/Directives/angular-touch.js", function (error, pgResp) {
-            if (error) {
-                res.writeHead(404);
-                res.write("Couldn't find angular-touch js. Sorry");
-            } else {
-                res.writeHead(200, { 'Content-Type': 'application/javascript' });
-                res.write(pgResp);
-            }
-            res.end();
-        });
-    }
-    else if (req.url === "/Directives/angular-carousel.js") {
-        fs.readFile("Client/Directives/angular-carousel.js.js", function (error, pgResp) {
-            if (error) {
-                res.writeHead(404);
-                res.write("Couldn't find angular-carousel js. Sorry");
-            } else {
-                res.writeHead(200, { 'Content-Type': 'application/javascript' });
-                res.write(pgResp);
-            }
-            res.end();
-        });
-    }
+    //else if (req.url === "/Directives/angular-touch.js") {
+    //    fs.readFile("Client/Directives/angular-touch.js", function (error, pgResp) {
+    //        if (error) {
+    //            res.writeHead(404);
+    //            res.write("Couldn't find angular-touch js. Sorry");
+    //        } else {
+    //            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+    //            res.write(pgResp);
+    //        }
+    //        res.end();
+    //    });
+    //}
+    //else if (req.url === "/Directives/angular-carousel.js") {
+    //    fs.readFile("Client/Directives/angular-carousel.js.js", function (error, pgResp) {
+    //        if (error) {
+    //            res.writeHead(404);
+    //            res.write("Couldn't find angular-carousel js. Sorry");
+    //        } else {
+    //            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+    //            res.write(pgResp);
+    //        }
+    //        res.end();
+    //    });
+    //}
     else if (req.url === "/Styles/main.css") {
         fs.readFile("Client/Styles/main.css", function (error, pgResp) {
             if (error) {
@@ -387,8 +389,8 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
-    else if (req.url === "/Styles/Images/favicon.ico") {
-        fs.readFile("Client/Styles/Images/favicon.ico", function (error, pgResp) {
+    else if (req.url === "/Images/githubicon.png") {
+        fs.readFile("Client/Images/githubicon.png", function (error, pgResp) {
             if (error) {
                 res.writeHead(404);
                 res.write("Couldn't find the favicon. Sorry");
@@ -433,7 +435,7 @@ var server = http.createServer(function (req, res) {
 
             //connection.on('connect', function (err) {
             // If no error, then good to proceed.  
-            createTaskDB(newTask, res);
+            createTaskDB(newTask, res, cookies.get('socketId'));
             //});
         });
     }
@@ -444,9 +446,8 @@ var server = http.createServer(function (req, res) {
         })
         req.on('end', function () {
             var id = JSON.parse(jsonString);
-            deleteTaskDB(id);
+            deleteTaskDB(id, res, cookies.get('socketId'));
         });
-        res.end();
     }
     else if (req.url === "/updateTask") {
         var jsonString = '';
@@ -456,7 +457,9 @@ var server = http.createServer(function (req, res) {
         req.on('end', function () {
             var task = JSON.parse(jsonString);
             updateTaskDB(task);
-            io.to('838563584091570176').emit('update', task);
+            console.log("sending update to socket io");
+            //socket.broadcast.to(googleUserId).emit('update', task);
+
         });
         res.end();
     }
@@ -471,6 +474,7 @@ var server = http.createServer(function (req, res) {
     }
     else if (req.url === "/loadTaskNameDictionary") {
         loadTaskNameDictionaryDB(res);
+        //TODO emit new dictionary to client
     }
     else if (req.url === "/loadDataForGoogleChart") {
         var jsonString = '';
@@ -495,6 +499,7 @@ var server = http.createServer(function (req, res) {
             client.verifyIdToken(token, CLIENT_ID, function (e, login) {
                 var payload = login.getPayload();
                 userid = payload['sub'];
+                cookies.set('email', payload['email'], { httpOnly: false });//TODO add expiration date to it
                 cookies.set('userid', userid, { httpOnly: false });//TODO add expiration date to it
                 res.end();
             });
@@ -518,9 +523,13 @@ var server = http.createServer(function (req, res) {
 
 
 //Socket.io
-var ioRoom = "room1";
 io = require('socket.io')(server);
 io.sockets.on('connection', function (socket) {
+
+    socket.on('room', function (room) {
+        socket.join(room);
+    });
+
     socket.broadcast.emit('news', {
         hello: 'socket'
     });

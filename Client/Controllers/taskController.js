@@ -2,7 +2,7 @@
 
 (function () {
     'use strict';
-
+    var currentUserId;
     angular.module('knockApp', ['ngMaterial', 'ngCsv', 'ngSanitize', 'ngCookies', 'btford.socket-io', 'googlechart'])//, 'angular-carousel'])
         .controller('taskController', taskController)
         .directive('autoComplete', function ($timeout) {
@@ -24,15 +24,9 @@
         $scope.currentDay = new Date();
         $scope.currentDay = $scope.currentDay.getTime() / 1000;
         $scope.dayInSeconds = 86400;
-        // $scope.todayDayStart = $scope.date;
-        //$scope.todayDayStart.setHours(0, 0, 0, 0);
-        //$scope.todayDayEnd = new Date();
-        //$scope.todayDayEnd.setDate($scope.todayDayEnd.getDate() + 1);
-        //$scope.todayDayStart = $scope.todayDayStart.getTime() / 1000;
-        // console.log($scope.todayDayEnd);
-        //to get date starting from the week ago
+        //get date starting from the week ago
         var weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
+        weekAgo.setDate(weekAgo.getDate() - 8);
         $scope.chartStartDate = new Date(weekAgo);
         $scope.chartEndDate = new Date();
         $scope.chartmMinDate = new Date(19700130);
@@ -143,13 +137,11 @@
         $scope.newItemName = "";
         $scope.date = new Date();
         $scope.workItemMessage = "ADD TASK";
-        4
         function createTask(newTask) {
             $scope.taskNamesDictionary.unshift(newTask['Name']);
             $http.post('/createTask', newTask)
                 .success(function (data) {
                     newTask['Id'] = data;
-
                 })
                 .error(function (data) {
                     console.error("error happened in http " + data);
@@ -209,22 +201,25 @@
             //TODO: add confirmation before and after the event
             $http.post('/deleteTask', id)
                 .success(function (data) {
-                    var itemsArr = $scope.allTaskList;
-                    for (var i = 0; i < itemsArr.length; i++) {
-                        itemsArr[i].forEach(function (arr, index) {
-                            if (arr['Id'] == id) {
-                                itemsArr[i].splice(index, 1);
-                                return;
-
-                            }
-                        });
-                    }
+                    deleteTaskFromLocalList(id);
                 })
                 .error(function (data) {
                     console.error("error, didn't delete the task" + data);
                 });
 
         };
+        function deleteTaskFromLocalList(id) {
+            var itemsArr = $scope.allTaskList;
+            for (var i = 0; i < itemsArr.length; i++) {
+                itemsArr[i].forEach(function (arr, index) {
+                    if (arr['Id'] == id) {
+                        itemsArr[i].splice(index, 1);
+                        return;
+
+                    }
+                });
+            }
+        }
         //load dictionary for angular auto complete
         function loadTaskNameDictionary() {
             $http.get("/loadTaskNameDictionary")
@@ -285,6 +280,7 @@
                         }
 
                         checkAndArchiveItem(item);
+
                         if (item.TimerOn == 1) {
                             startStopwatchHelper(item);
                         }
@@ -318,16 +314,27 @@
 
         // Stop and archive long-running items (we want them to run not longer than 24hrs)
         function checkAndArchiveItem(item) {
-            if (new Date().getTime() / 1000 - item.InitialStart > 86400) {
-                console.log("archiving item");
+            if ((new Date().getTime() / 1000) - item.InitialStart > 86400 || item.TotalTime >= 86400) {
+                var changesMade = 0;
                 item.Archived = true;
-                item.TimerOn = 0;
-                item.TotalTime = Math.min(item.TotalTime, 86400);
-                if (item.Timer !== null && item.Timer !== undefined) {
-                    $interval.cancel(item.Timer);
+                if (item.TotalTime > 86400) {
+                    item.TotalTime = 86400;//Math.min(item.TotalTime, 86400);
+                    changesMade++;
                 }
-                updateTask(item);
+                if (item.TimerOn) {
+                    item.TimerOn = false;
+                    $interval.cancel(item.Timer);
+                    changesMade++;
+                }
+                if (changesMade > 0) {
+                    updateTask(item);
+                }
+
             }
+
+
+
+            //}
         }
 
         //stop all task for the user TODO:complete this, doesn't work on server at the moment
@@ -357,7 +364,10 @@
                 item.Hours = Math.floor(item.TotalTime / 3600);
                 item.Minutes = Math.floor((item.TotalTime - item.Hours * 3600) / 60);
                 item.Seconds = item.TotalTime - (item.Hours * 3600 + item.Minutes * 60);
-                checkAndArchiveItem(item);
+                if (!item.Archived) {
+
+                    checkAndArchiveItem(item);
+                }
                 //$scope.$apply();
             }
 
@@ -466,7 +476,7 @@
                 event.preventDefault();
         });
         $("p").keypress(function (event) {
-           
+
             if (event.keyCode === 13) {
 
                 event.preventDefault();
@@ -500,12 +510,10 @@
 
                         // var timeInSeconds = parseInt(item.TotalTimeInHours);
 
-                        var timeInHours = parseInt(item.TotalTimeInHours);
-                        var temp = timeInHours;
-                        var hours = parseInt((temp / 60));
-                        var minutes = ((temp % 60) / 60);
-                        var temp = hours + minutes;
-                        timeInHours = parseFloat(temp);
+                        var timeInMinutes = parseInt(item.TotalTimeInMinutes);
+                        var hours = parseInt((timeInMinutes / 60));
+                        var fractionOfHour = ((timeInMinutes % 60) / 60);
+                        var timeInHours = parseFloat(hours + fractionOfHour);
                         timeInHours = Math.round(timeInHours * 1e2) / 1e2;
                         var curRowArr = [currentName, timeInHours];
                         allRowsForChart.push(curRowArr);
@@ -544,13 +552,15 @@
             };
         };
         //$scope.$watch("chartStartDate", function () {
-        //    onChange(" kuku chartStartDate");
+        //    loadDataForGoogleChart();
         //});
         //$scope.$watch("chartEndDate", function () {
-        //    onChange(" kuku chartEndDate");
+        //    loadDataForGoogleChart();
         //});
         $scope.chartDatepickerChange = function () {
             loadDataForGoogleChart();
+            console.log($scope.chartStartDate.getTime() / 1000);
+            console.log($scope.chartEndDate.getTime() / 1000);
         };
 
         //SECONDARY HELPERS
@@ -566,14 +576,20 @@
                 clickOutsideToClose: true,
                 fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
             })
-
-                //.then(function (answer) {
-                //    $scope.status = 'You said the information was "' + answer + '".';
-                //}, function () {
-                //    $scope.status = 'You cancelled the dialog.';
-                //});
         }
-        showAdvancedHelper();
+
+        //Show intro message for new users
+        // $cookies.set('newVisitor', true, { httpOnly: false });
+        function showIntroMessage() {
+            var alreadyVisited = $cookies.get('newVisitor');
+            if (!$scope.userInfo['signedIn'] && !alreadyVisited) {
+                showAdvancedHelper();
+                console.log($scope.userInfo.signedIn);
+                $cookies.put('newVisitor', false, { httpOnly: false });
+            }
+        }
+        showIntroMessage();
+
         function DialogController($scope, $mdDialog) {
             $scope.hide = function () {
                 $mdDialog.hide();
@@ -592,6 +608,7 @@
         //    setInterval(keepAliveCall, 1000000);
 
 
+
         //}
         //function keepAliveCall() {
         //    $http.post('/keepAlive')
@@ -603,20 +620,53 @@
         //        });
         //}
         //keepAlive();
+        currentUserId = $cookies.get('userid');
+        //Socket.io to get updates from other clients for the current user
+        var socket = io();
+        //io.on('connection', function (socket) {
+        //    socket.join(currentUserId);
+        //});
+        var socketId
+        socket.on("connect", function () {
+            socketId = socket.id;
+            $cookies.put('socketId', socketId, { httpOnly: false });
+            //TODO(Tania): logic to update task here
+        });
+        socket.on("update", function (updatedTask) {
+            console.log('received updated from socket io:');
+            console.log(updatedTask);
+            //TODO(Tania): logic to update task here
+        });
+        socket.on("create", function (data) {
+            console.log('received updated from socket io:');
+ //           loadAllTasks();
+            if (socketId != data.socketId) {
+                todayTasks.unshift(data.task);
+                $scope.$apply();
+            }
+            //var inArray = $.inArray(newTask["Id"], todayTasks);
+            //if (inArray == -1) {
+            //    todayTasks.unshift(newTask);
+            //}
+           
+            //TODO(Tania): logic to update task here
+        });
+        socket.on("delete", function (data) {
+            console.log(socket);
+            console.log(socketId);
+            if (socketId != data.socketId) {
+                deleteTaskFromLocalList(data.taskId);
+                $scope.$apply();
+            }
+            //TODO(Tania): logic to update task here
+        });
+
+        socket.emit('room', currentUserId);
+
+        socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data lala' });
+        });
+
     }
-
-    //Socket.io
-    var socket = io();
-    socket.join("838563584091570176"); // room as user id 
-    socket.on("update", function (task) {
-
-    });
-
-    socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data lala' });
-    });
-   
-
-
 })();

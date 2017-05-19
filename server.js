@@ -137,7 +137,7 @@ function deleteTaskDB(id, res, socketId) {
 });
 
 }
-function updateTaskDB(task) {
+function updateTaskDB(task, res, socketId) {
     pool.acquire(function (err, connection) {
         if (connection == undefined) {
             console.log("Failed to get connection: " + err);
@@ -159,8 +159,12 @@ function updateTaskDB(task) {
         request.addParameter('Seconds', TYPES.BigInt, task['Seconds']);
         request.addParameter('TimerOn', TYPES.Bit, task['TimerOn']);
         connection.execSql(request);
-        io.to(googleUserId).emit('update', {
-            task: task, socketId: cookies.get('socketId')
+        request.on('doneProc', function (rowCount, more, returnStatus, rows) {
+            res.end();
+            connection.release();
+            io.to(googleUserId).emit('update', {
+                task: task, socketId: socketId
+            });
         });
     });
 
@@ -456,7 +460,7 @@ var server = http.createServer(function (req, res) {
         })
         req.on('end', function () {
             var task = JSON.parse(jsonString);
-            updateTaskDB(task);
+            updateTaskDB(task, res, cookies.get('socketId'));
             console.log("sending update to socket io");
             //socket.broadcast.to(googleUserId).emit('update', task);
 

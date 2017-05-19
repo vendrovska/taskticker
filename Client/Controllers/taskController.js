@@ -220,6 +220,18 @@
                 });
             }
         }
+        function updateTaskOnLocalList(updatedTask) {
+            var itemsArr = $scope.allTaskList;
+            for (var i = 0; i < itemsArr.length; i++) {
+                itemsArr[i].forEach(function (arr, index) {
+                    if (arr['Id'] == updatedTask['Id']) {
+                        itemsArr[i][index] = updatedTask;
+                        return;
+
+                    }
+                });
+            }
+        }
         //load dictionary for angular auto complete
         function loadTaskNameDictionary() {
             $http.get("/loadTaskNameDictionary")
@@ -632,22 +644,18 @@
             $cookies.put('socketId', socketId, { httpOnly: false });
             //TODO(Tania): logic to update task here
         });
-        socket.on("update", function (updatedTask) {
-            console.log('received updated from socket io:');
-            console.log(updatedTask);
-            //TODO(Tania): logic to update task here
+        socket.on("update", function (data) {
+            if (socketId != data.socketId) {
+
+                updateTaskOnLocalList(data.task);
+                $scope.$apply();
+            }
         });
         socket.on("create", function (data) {
-            console.log('received updated from socket io:');
- //           loadAllTasks();
             if (socketId != data.socketId) {
                 todayTasks.unshift(data.task);
                 $scope.$apply();
             }
-            //var inArray = $.inArray(newTask["Id"], todayTasks);
-            //if (inArray == -1) {
-            //    todayTasks.unshift(newTask);
-            //}
            
             //TODO(Tania): logic to update task here
         });

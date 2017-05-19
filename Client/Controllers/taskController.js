@@ -226,6 +226,14 @@
                 itemsArr[i].forEach(function (arr, index) {
                     if (arr['Id'] == updatedTask['Id']) {
                         itemsArr[i][index] = updatedTask;
+                        if (updatedTask.TimerOn) {
+                            updatedTask.Timer = $interval(function () {
+                                countTimer(updatedTask);
+                            }, 1000);
+                        }
+                        else {
+                            $interval.cancel(updatedTask.Timer);
+                        }
                         return;
 
                     }
@@ -370,28 +378,28 @@
             item.TimerOn = true;
             //send updates to the database
             updateTask(item);
-            item.Timer = $interval(countTimer, 1000);
-            function countTimer() {
-                item.TotalTime++;
-                item.Hours = Math.floor(item.TotalTime / 3600);
-                item.Minutes = Math.floor((item.TotalTime - item.Hours * 3600) / 60);
-                item.Seconds = item.TotalTime - (item.Hours * 3600 + item.Minutes * 60);
-                if (!item.Archived) {
-
-                    checkAndArchiveItem(item);
-                }
-                //$scope.$apply();
-            }
-
+            item.Timer = $interval(function () {
+                countTimer(item);
+            }, 1000);
+  
         };
+        function countTimer(item) {
+            item.TotalTime++;
+            item.Hours = Math.floor(item.TotalTime / 3600);
+            item.Minutes = Math.floor((item.TotalTime - item.Hours * 3600) / 60);
+            item.Seconds = item.TotalTime - (item.Hours * 3600 + item.Minutes * 60);
+            if (!item.Archived) {
+
+                checkAndArchiveItem(item);
+            }
+        }
+
+
         function updateTask(task) {
             //TODO: prettify this, shouldn't convert it manually every time
             task.Hours = Math.floor(task.TotalTime / 3600);
             task.Minutes = Math.floor((task.TotalTime - task.Hours * 3600) / 60);
             task.Seconds = task.TotalTime - (task.Hours * 3600 + task.Minutes * 60);
-            //task.Hours = parseInt(task.Hours);
-            //task.Minutes = parseInt(task.Minutes);
-            //task.Seconds = parseInt(task.Seconds);
             task.Id = parseInt(task.Id);
             $http.post('/updateTask', task)
                 .success(function (data) {
@@ -403,18 +411,22 @@
         $scope.pauseStopwatch = function (item) {
             // clearInterval(item.timer);
             item.TimerOn = false;
-            updateTask(item);
-            $interval.cancel(item.Timer);
+            stopStopwatchHelper(item);
             //update endDate in db
         };
+
+        function stopStopwatchHelper(item) {
+            updateTask(item);
+            $interval.cancel(item.Timer);
+
+        }
         $scope.resetStopWatch = function (item) {
             item.TotalTime = 0;
             item.Hours = 0;
             item.Minutes = 0;
             item.Seconds = 0;
             item.TimerOn = false;
-            updateTask(item);
-            $interval.cancel(item.Timer);
+            stopStopwatchHelper(item);
         };
 
         $scope.updateTaskName = function (item) {
@@ -648,6 +660,8 @@
             if (socketId != data.socketId) {
 
                 updateTaskOnLocalList(data.task);
+
+
                 $scope.$apply();
             }
         });

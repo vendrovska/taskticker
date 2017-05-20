@@ -98,7 +98,9 @@
         </div>
     </div>
     <div layout-margin>
-        <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="row" layout-align=" start center" layout-margin>
+        <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="column" layout-gt-m="row" layout-align="space-between center" layout-margin>
+           
+
             <div layout="row" layout-align="start center">
                 <md-input-container class="md-block">
                     <label><i class="material-icons">playlist_add</i></label>
@@ -106,10 +108,13 @@
                 </md-input-container>
                 <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid" onsubmit="addNewTask($event, newTaskForm.$valid)">NEW</md-button>
             </div>
-            <md-button title="save as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
-            <!--TODO: decode what to do with Stop All Btn-->
-            <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
-            <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()" ng-if="userInfo.signedIn"><md-icon class="material-icons">insert_chart</md-icon></md-button>
+
+            <div>
+                <md-button title="save as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
+                <!--TODO: decode what to do with Stop All Btn-->
+                <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
+                <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()" ng-if="userInfo.signedIn"><md-icon class="material-icons">insert_chart</md-icon></md-button>
+            </div>
         </form>
         <div ng-if="showChart" layout="column" layout-margin>
             <div ng-if="userInfo.signedIn">

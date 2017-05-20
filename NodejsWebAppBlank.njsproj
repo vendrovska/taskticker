@@ -71,10 +71,10 @@ dbPassword=467874108Tania!</Environment>
     <Content Include="Client\Styles\Images\favicon.ico" />
     <Content Include="Client\Styles\main.css" />
     <Content Include="Client\Styles\xeditable.css" />
-    <Content Include="Client\Views\Index.html" />
-    <Content Include="Client\Views\NewGuest.tmpl.html">
+    <Content Include="Client\Views\AboutDialog.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Client\Views\Index.html" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="Web.config" />

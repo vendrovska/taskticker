@@ -87,8 +87,7 @@
 
         <div layout="row">
             <h1>TaskTicker</h1>
-            <md-button class="md-icon-button" title="draw data chart" ng-click="showAdvanced()"><md-icon class="material-icons">info_outline</md-icon></md-button>
-            
+            <md-button class="md-icon-button" title="About this project" ng-click="showAboutDialog()"><md-icon class="material-icons">info_outline</md-icon></md-button>
         </div>
         <div id="userProfile" flex layout="row" layout-align="end center" layout-margin>
             <img ng-src="{{userInfo.userPic}}" height="30" alt="profile image" id="userProfilePic" ng-if="userInfo.signedIn" title="{{userInfo.userName}}" />
@@ -98,7 +97,7 @@
         </div>
     </div>
     <div layout-margin>
-        <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="column" layout-gt-m="row" layout-align="space-between center" layout-margin>
+        <form name="newTaskForm" ng-submit="addNewTask($event, newTaskForm.$valid)" novalidate id="newItemFormId" layout="column" layout-gt-m="row" layout-align="start left" layout-margin>
            
 
             <div layout="row" layout-align="start center">
@@ -110,7 +109,7 @@
             </div>
 
             <div>
-                <md-button title="save as csv" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
+                <md-button title="Generate a CSV file with all tasks" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
                 <!--TODO: decode what to do with Stop All Btn-->
                 <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
                 <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()" ng-if="userInfo.signedIn"><md-icon class="material-icons">insert_chart</md-icon></md-button>
@@ -208,63 +207,3 @@
 </body>
 
 </html>
-<script type="text/ng-template" id="dialog1.tmpl.html">
-    <md-dialog aria-label="Mango (Fruit)">
-        <form ng-cloak layout-margin>
-            <md-dialog-content id="welcomeModal" style="color:#616161!important; font-family: Arial; font-size:1.5em;">
-                <div class="md-dialog-content">
-                    <div layout="row" layout-align="center center" layout-margin>
-                        <h2>Welcome</h2>
-                        <!--<a ng-href="https://github.com/vendrovska/taskticker"><img ng-src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/mark-github.svg" /></a>-->            
-                        <!--<a ng-href="https://github.com/vendrovska/taskticker"><img src="../Images/githubicon.png" /></a>-->
-                       
-                    </div>     
-                    <p>
-                        TaskTicker will help you to keep track of all your daily activities.
-                        Sign in with Google for extra options.
-                    </p>
-                    <p>
-                        Guest:
-                        <ul>
-                            <li>
-                                Create new tasks.
-                            </li>
-                            <li>
-                                Download them to your computer.
-                            </li>
-                        </ul>
-                    </p>
-                    <p>
-                        Signed In:
-                        <ul>
-                            <li>
-                                Edit  and update tasks.
-                            </li>
-                            <li>
-                                See the history of all tasks.
-                            </li>
-                            <li>
-                                Visualize your tasks’ data.
-                            </li>
-                            <li>
-                                Connect to your data from any location.
-                            </li>
-                        </ul>
-                    </p>
-                </div>
-            </md-dialog-content>
-            <md-dialog-actions layout="row" layout-align="space-between center" >
-                <!--TODO Complete google sign in <md-button>
-                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                </md-button>-->
-                <a ng-href="https://github.com/vendrovska/taskticker" layout-align="end">
-                    <svg aria-hidden="true" class="octicon octicon-mark-github" height="32" version="1.1" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
-                    https://github.com/vendrovska/taskticker
-                </a>
-                <md-button ng-click="answer('not useful')">
-                    Got it!
-                </md-button>
-            </md-dialog-actions>
-        </form>
-    </md-dialog>
-</script>

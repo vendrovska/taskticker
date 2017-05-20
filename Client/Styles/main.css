@@ -75,8 +75,9 @@ md-card md-card-title {
 #userProfile p {
     display: inline;
 }
+
 #userProfile {
-    font-size: .7em!important;
+    font-size: .7em !important;
 }
 
 .material-icons {
@@ -114,18 +115,26 @@ md-list-item {
     #gotoThePageTop .material-icons {
         color: white !important;
     }
+
 #welcomeModal div {
-background-color:red!important;
+    background-color: red !important;
 }
+
 footer {
     position: fixed;
     bottom: 1em;
 }
+
     footer a {
         text-decoration: none;
-        font-family:Arial;
+        font-family: Arial;
     }
+
         footer a:hover {
-        opacity:.7;
+            opacity: .7;
         }
-    /*Animation for collapse/expand*/
+
+#welcomeModal p {
+    font-size: 0.3em!important;
+}
+/*Animation for collapse/expand*/

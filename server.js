@@ -333,6 +333,19 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
+    if (req.url === "/AboutDialog.html") {
+        fs.readFile("Client/Views/AboutDialog.html", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write('Contents you are looking are Not Found');
+            } else {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(pgResp);
+            }
+
+            res.end();
+        });
+    }
     else if (req.url === "/Controllers/taskController.js") {
         fs.readFile("Client/Controllers/taskController.js", function (error, pgResp) {
             if (error) {

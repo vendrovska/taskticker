@@ -61,6 +61,7 @@
                     InitialStart: new Date(1000 * task["InitialStart"]),
                     LastStart: new Date(1000 * task["LastStart"]),
                     TotalTimeInSeconds: task["TotalTime"],
+                    TotalTime: "" + task["Hours"] + ":" + task["Minutes"] + ":" + task["Seconds"],
                     Hours: task["Hours"],
                     Minutes: task["Minutes"],
                     Seconds: task["Seconds"],
@@ -72,8 +73,15 @@
             return res;
         }
         $scope.getCsvHeader = function () {
-            return ["Id", "Name", "InitialStart", "LastStart", "TotalTimeInSeconds", "Hours", "Minutes", "Seconds", "TimerOn"];
+            return ["Id", "Name", "InitialStart", "LastStart", "TotalTimeInSeconds", "TotalTime", "Hours", "Minutes", "Seconds", "TimerOn"];
         };
+        $scope.copyOneDayToClipboard = function () {
+            //Doesn't work! (and not finished). From what I found we'd need to add text to an documet's element 1st, select 
+            // this element, and then issue. document.execCommand('copy').... or something like this
+            // Also, how do we decide which day to copy?
+            var clipboardData = window.clipboardData;
+            clipboardData.setData('text/plain', $scope.getCsvHeader());
+        }
         //Google sign in for more refference on how to implement: https://developers.google.com/identity/sign-in/web/backend-auth
         function resetPageForNewUser() {
             todayTasks = [];
@@ -136,7 +144,7 @@
         $scope.count = 0;
         $scope.newItemName = "";
         $scope.date = new Date();
-        $scope.workItemMessage = "ADD TASK";
+        $scope.workItemMessage = "ADD TASK TO TRACK ITS TIME";
         function createTask(newTask) {
             $scope.taskNamesDictionary.unshift(newTask['Name']);
             $http.post('/createTask', newTask)
@@ -588,13 +596,13 @@
         };
 
         //SECONDARY HELPERS
-        $scope.showAdvanced = function () {
-            showAdvancedHelper();
+        $scope.showAboutDialog = function () {
+            showAboutDialogHelper();
         };
-        function showAdvancedHelper() {
+        function showAboutDialogHelper() {
             $mdDialog.show({
                 controller: DialogController,
-                templateUrl: 'dialog1.tmpl.html',
+                templateUrl: 'AboutDialog.html',
                 parent: angular.element(document.body),
                 //targetEvent: ev,
                 clickOutsideToClose: true,
@@ -607,7 +615,7 @@
         function showIntroMessage() {
             var alreadyVisited = $cookies.get('newVisitor');
             if (!$scope.userInfo['signedIn'] && !alreadyVisited) {
-                showAdvancedHelper();
+                showAboutDialogHelper();
                 console.log($scope.userInfo.signedIn);
                 $cookies.put('newVisitor', false, { httpOnly: false });
             }

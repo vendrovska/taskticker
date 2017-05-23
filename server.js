@@ -418,6 +418,18 @@ var server = http.createServer(function (req, res) {
             res.end();
         });
     }
+    else if (req.url === "/Images/raccoon.jpg") {
+        fs.readFile("Client/Images/raccoon.jpg", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write("Couldn't find the favicon. Sorry");
+            } else {
+                res.writeHead(200, { 'Content-Type': 'image/ico' });
+                res.write(pgResp);
+            }
+            res.end();
+        });
+    }
     else if (req.url === "/Styles/Images/favicon.ico") {
         fs.readFile("Client/Styles/Images/favicon.ico", function (error, pgResp) {
             if (error) {

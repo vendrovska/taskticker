@@ -43,6 +43,7 @@
         var theDayBeforeTasks = [];
         var oldTasks = [];
         $scope.allTaskList = [todayTasks, theDayBeforeTasks, oldTasks];
+        $scope.taskListIsEmpty = true;
         //
         $scope.userInfo = {
             token: 0,
@@ -332,6 +333,7 @@
                             date: new Date(1000 * oldTasks[0]['InitialStart'])
                         }
                     ];
+                    taskListIsEmpty();
                 },
                 function (error) {
                     // failure call back
@@ -340,6 +342,19 @@
                 );
         };
 
+        //check if there are no tasks at all
+        function taskListIsEmpty() {
+            var counter = 0;
+            $scope.allTaskList.forEach(function (taskPeriod) {
+                counter += taskPeriod.length; //TODO: make more efficient, don't have to loop till the end if value already > 0'
+            });
+            if (counter > 0) {
+                $scope.taskListIsEmpty = false;
+            }
+            else {
+                $scope.taskListIsEmpty = true;
+            }
+        }
         // Stop and archive long-running items (we want them to run not longer than 24hrs)
         function checkAndArchiveItem(item) {
             if ((new Date().getTime() / 1000) - item.InitialStart > 86400 || item.TotalTime >= 86400) {

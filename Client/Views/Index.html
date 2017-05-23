@@ -108,11 +108,11 @@
                 <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid" onsubmit="addNewTask($event, newTaskForm.$valid)">NEW</md-button>
             </div>
 
-            <div>
+            <div ng-if="userInfo.signedIn">
                 <md-button title="Generate a CSV file with all tasks" type="button" ng-csv="getCsvFiledata()" csv-header="getCsvHeader()" filename="TaskList_{{date | date:'yyyy-MM-dd'}}_{{userInfo.userName}}.csv" field-separator="," decimal-separator="."><md-icon class="material-icons">file_download</md-icon>save as csv</md-button>
                 <!--TODO: decode what to do with Stop All Btn-->
                 <!--<md-button class="md-raised" ng-click="stopAllTasks()">STOP ALL</md-button>-->
-                <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()" ng-if="userInfo.signedIn"><md-icon class="material-icons">insert_chart</md-icon></md-button>
+                <md-button class="md-icon-button" title="draw data chart" ng-click="drawGoogleChart()" ><md-icon class="material-icons">insert_chart</md-icon></md-button>
             </div>
         </form>
         <div ng-if="showChart" layout="column" layout-margin>
@@ -148,9 +148,9 @@
                 </md-dialog>
             </div>
         </div>
+
         <div ng-repeat="tasks in allTaskList">
             <div layout-margin>
-
                 <div layout="row" layout-align="start center" ng-show="tasks.length > 0">
                     <md-button class="md-icon-button" ng-click="collapsed = false" ng-model="collapsed" ng-show="collapsed"><md-icon class="material-icons">arrow_drop_down</md-icon></md-button>
                     <md-button class="md-icon-button" ng-click="collapsed = true" ng-model="collapsed" ng-show="!collapsed"><md-icon class="material-icons">arrow_drop_up</md-icon></md-button>
@@ -197,6 +197,10 @@
                 </div>
             </div>
 
+        </div>
+        <div ng-if="taskListIsEmpty" style="opacity:.7;" layout="column" layout-align="center center">
+            <p>No tasks to worries</p>
+            <img ng-src="../Images/raccoon.jpg" height="500" alt="no tasks image" title="no tasks" />
         </div>
         <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
             <md-icon class="material-icons">keyboard_capslock</md-icon>

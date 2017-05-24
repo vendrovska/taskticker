@@ -138,10 +138,11 @@ footer {
     font-size: 0.3em!important;
 }
 /*Animation for collapse/expand*/
-#emptyTaskListText {
+#emptyTaskListText div{
     background: url(../Images/raccoon.jpg) no-repeat;
-    height:500px;
-    color:white;
-    font-size:3em;
-    opacity:.8;
+    background-size: contain;
+    height: 500px;
+    color: white;
+    font-size: 200%;
 }
+

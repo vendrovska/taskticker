@@ -147,6 +147,7 @@
         $scope.date = new Date();
         $scope.workItemMessage = "ADD TASK TO TRACK ITS TIME";
         function createTask(newTask) {
+            $scope.taskListIsEmpty = false;
             $scope.taskNamesDictionary.unshift(newTask['Name']);
             $http.post('/createTask', newTask)
                 .success(function (data) {

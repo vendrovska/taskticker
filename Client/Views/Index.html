@@ -198,10 +198,14 @@
             </div>
 
         </div>
-        <div ng-if="taskListIsEmpty" layout="row" layout-align="center end" id="emptyTaskListText">
-            <p >Your task list is empty</p>
+        <div ng-if="taskListIsEmpty" layout="column" layout-margin layout-align="start" id="emptyTaskListText">
+          <div>
+             
+              <!--<p>Your task list is empty</p>-->
+          </div>
             <!--<img ng-src="../Images/raccoon.jpg" height="500" alt="no tasks image" title="no tasks" />-->
         </div>
+
         <md-button id="gotoThePageTop" class="md-secondary md-fab" aria-label="gotoThePageTop" ng-click="scrollUp()">
             <md-icon class="material-icons">keyboard_capslock</md-icon>
         </md-button>

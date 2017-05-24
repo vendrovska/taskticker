@@ -103,9 +103,27 @@
             <div layout="row" layout-align="start center">
                 <md-input-container class="md-block">
                     <label><i class="material-icons">playlist_add</i></label>
-                    <textarea auto-complete ui-items="taskNamesDictionary" ng-required="true" value="" ng-keyup="addNewTask($event, newTaskForm.$valid)" placeholder="{{workItemMessage}}" ng-minlength="1" ng-maxlength="256" rows="1" cols="60" md-select-on-focus="" type="text" ng-model="newItemName"></textarea>
+                    <textarea 
+                              ng-model-options="{ updateOn: 'default blur', debounce: { default: 300, blur: 0 }  }" 
+                              auto-complete ui-items="taskNamesDictionary" 
+                              name="taskTextArea" 
+                              ng-required="true" 
+                              value="" 
+                              ng-keyup="addNewTask($event, newTaskForm.$valid)" 
+                              placeholder="{{workItemMessage}}" 
+                              ng-minlength="1" 
+                              ng-maxlength="256" 
+                              rows="1" 
+                              cols="60" 
+                              md-select-on-focus="" 
+                              type="text" 
+                              ng-model="newItemName"
+                              class="ng-touched"
+                              ></textarea>
                 </md-input-container>
                 <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid" onsubmit="addNewTask($event, newTaskForm.$valid)">NEW</md-button>
+                <!--<span ng-show="newTaskForm.taskTextArea.$error.required">Please enter something!</span>
+                <span ng-show="!newTaskForm.taskTextArea.$error.required">Good boy!</span>-->
             </div>
 
             <div ng-if="userInfo.signedIn">

@@ -110,6 +110,7 @@
                 delete $cookies['userid'];
                 // $cookies.put('userid','0');
                 resetPageForNewUser();
+                taskListIsEmpty();
             });
 
 
@@ -212,6 +213,8 @@
             $http.post('/deleteTask', id)
                 .success(function (data) {
                     deleteTaskFromLocalList(id);
+                    //check if task removed was the last one, so the placeholder image comes back
+                    taskListIsEmpty();
                 })
                 .error(function (data) {
                     console.error("error, didn't delete the task" + data);

@@ -154,7 +154,7 @@
                 <div layout="row" layout-align="start center" ng-show="tasks.length > 0">
                     <md-button class="md-icon-button" ng-click="collapsed = false" ng-model="collapsed" ng-show="collapsed"><md-icon class="material-icons">arrow_drop_down</md-icon></md-button>
                     <md-button class="md-icon-button" ng-click="collapsed = true" ng-model="collapsed" ng-show="!collapsed"><md-icon class="material-icons">arrow_drop_up</md-icon></md-button>
-                    <h2 ng-if="tasks.length > 0">{{timePeriods[$index].title}}({{timePeriods[$index].date| date:'dd/MM/yyyy'}})</h2>
+                    <h2 ng-if="tasks.length > 0 && userInfo.signedIn">{{timePeriods[$index].title}}({{timePeriods[$index].date| date:'dd/MM/yyyy'}})</h2>
 
                 </div>
 

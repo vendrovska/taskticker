@@ -6,6 +6,9 @@
     background-color: pink;
     text-align: center !important;
 }
+.taskNameTextArea {
+overflow:hidden;
+} 
 
 .md-mini {
     background-color: white !important;

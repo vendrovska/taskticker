@@ -461,7 +461,7 @@
             var newName = $('#' + id).text().trim();
 
             if (newName.length > 256 || newName.length <= 0) {
-                alert('Sorry, the description must not be more than 2000 characters long');
+                alert('Sorry, the description must not be more than 256 characters long');
             }
             else {
                 item.Name = newName;

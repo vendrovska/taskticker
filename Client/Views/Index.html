@@ -119,6 +119,7 @@
                               type="text" 
                               ng-model="newItemName"
                               class="ng-touched"
+                              
                               ></textarea>
                 </md-input-container>
                 <md-button type="submit" class="md-raised md-primary" ng-disabled="newTaskForm.$invalid" onsubmit="addNewTask($event, newTaskForm.$valid)">NEW</md-button>
@@ -182,7 +183,16 @@
                     <div>
                         <md-card ng-repeat="item in tasks" id="{{item.Id}}" flex="100">
                             <md-card-title ng-class="{'taskOn': item.TimerOn, 'taskOff': !item.TimerOn, 'taskBlank':item.TotalTime == 0}">
-                                <p layout-margin contenteditable="true" id="p{{item.Id}}" ng-keyup="$event.keyCode == 13 ? updateTaskName(item) : null" ng-focus="editingTaskName = true" ng-blur="editingTaskName = false">{{item.Name}}</p>
+                                <p 
+                                   layout-margin contenteditable="true" 
+                                   id="p{{item.Id}}" 
+                                   ng-keyup="$event.keyCode == 13 ? updateTaskName(item) : null" 
+                                   ng-focus="editingTaskName = true" 
+                                   ng-blur="editingTaskName = false"
+                                   class="taskNameTextArea"
+                                   >{{item.Name}}  
+                                </p>
+                                    
                             </md-card-title>
                             <md-card-content>
                                 <md-card-actions class="taskControls" layout="row" layout-align="space-between center">

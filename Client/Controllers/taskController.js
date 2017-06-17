@@ -172,11 +172,11 @@
         }
 
         //Add new task to the list
-        function addNewTaskHelper() {
+        function addNewTaskHelper(text) {
             $scope.count = 1;
             var newItem = {
                 Id: 0,
-                Name: String($scope.newItemName),
+                Name: text, //String($scope.newItemName),
                 LastStart: (new Date().getTime()) / 1000,
                 InitialStart: (new Date().getTime()) / 1000,
                 TotalTime: 0,
@@ -199,8 +199,9 @@
         $scope.addNewTask = function (event, formValid) {
             if (event.keyCode == 13 || event.type == "submit") {
                 var minLength = $("#newItemFormId textarea").text.length;
+                var text = $scope.newTaskForm.taskTextArea.$viewValue;
                 if (formValid && minLength > 0) {
-                    addNewTaskHelper();
+                    addNewTaskHelper(text);
                 }
             }
 
